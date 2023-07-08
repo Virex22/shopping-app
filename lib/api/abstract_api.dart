@@ -1,11 +1,24 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class AbstractAPI {
-  static const String baseUrl = 'http://api-shop.vincent-remy.fr';
   late Dio dio;
 
   AbstractAPI() {
-    dio = Dio(BaseOptions(baseUrl: baseUrl));
+    final String? baseUrl = dotenv.env['API_URL'];
+
+    dio = Dio(BaseOptions(
+      baseUrl: baseUrl!,
+      headers: {'Content-Type': 'application/json'},
+    ));
+
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        final authToken = dotenv.env['AUTH_TOKEN'];
+        options.headers['X-AUTH-TOKEN'] = authToken;
+        return handler.next(options);
+      },
+    ));
   }
 
   Future<Response<dynamic>> get(String path,
