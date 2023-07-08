@@ -9,6 +9,10 @@ class ShopTile extends StatelessWidget {
   const ShopTile({Key? key, required this.shop, required this.handleShopAction})
       : super(key: key);
 
+  void navigateOnShop(BuildContext context) {
+    //Navigator.of(context).pushNamed('/shops/${shop.id}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,9 +26,9 @@ class ShopTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.edit,
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
               ),
               onPressed: () {
                 final TextEditingController nameController =
@@ -107,10 +111,18 @@ class ShopTile extends StatelessWidget {
                 }
               },
             ),
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_forward_ios,
+              ),
+              onPressed: () {
+                navigateOnShop(context);
+              },
+            ),
           ],
         ),
         onTap: () {
-          // Navigator.of(context).pushNamed('/shops/${shop.id}');
+          navigateOnShop(context);
         },
       ),
     );

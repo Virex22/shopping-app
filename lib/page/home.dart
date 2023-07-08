@@ -10,11 +10,25 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Accueil'),
       ),
-      body: ListTile(
-        title: const Text('Base de données'),
-        onTap: () {
-          context.go('/shops');
-        },
+      body: Card(
+        elevation: 2,
+        child: ListTile(
+          title: Text('Base de données',
+              style: Theme.of(context).textTheme.titleLarge),
+          subtitle: const Text('Accéder à la base de données'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.dashboard_customize_sharp,
+                  size: 30, color: Theme.of(context).primaryColor),
+              Container(width: 10),
+              const Icon(Icons.arrow_forward_ios),
+            ],
+          ),
+          onTap: () {
+            context.go('/shops');
+          },
+        ),
       ),
     );
   }

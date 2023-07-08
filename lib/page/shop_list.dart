@@ -131,7 +131,8 @@ class ShopListPageState extends State<ShopListPage> {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        child:
+            Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
       ),
     );
   }
