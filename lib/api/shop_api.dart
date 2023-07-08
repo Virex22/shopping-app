@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:shopping_app/api/abstract_api.dart';
 import 'package:shopping_app/model/shop.dart';
 
@@ -21,8 +22,9 @@ class ShopAPI extends AbstractAPI {
     return Shop.fromJson(data);
   }
 
-  Future<void> deleteShop(int id) async {
-    await delete('/shops/$id');
+  Future<bool> deleteShop(int id) async {
+    final Response<dynamic> response = await delete('/shops/$id');
+    return response.statusCode == 204;
   }
 
   Future<Shop> updateShop(int id, Map<String, dynamic> updatedData) async {

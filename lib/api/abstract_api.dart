@@ -9,7 +9,12 @@ abstract class AbstractAPI {
 
     dio = Dio(BaseOptions(
       baseUrl: baseUrl!,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
+      },
     ));
 
     dio.interceptors.add(InterceptorsWrapper(
