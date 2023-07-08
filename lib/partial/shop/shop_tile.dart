@@ -4,10 +4,9 @@ import 'package:shopping_app/model/shop.dart';
 
 class ShopTile extends StatelessWidget {
   final Shop shop;
-  final Function(Shop) handleShopDeleted;
+  final Function(String, Shop) handleShopAction;
 
-  const ShopTile(
-      {Key? key, required this.shop, required this.handleShopDeleted})
+  const ShopTile({Key? key, required this.shop, required this.handleShopAction})
       : super(key: key);
 
   @override
@@ -19,30 +18,96 @@ class ShopTile extends StatelessWidget {
           shop.name,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        trailing: IconButton(
-          icon: const Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
-          onPressed: () async {
-            ShopAPI shopApi = ShopAPI();
-            ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
-            bool response = await shopApi.deleteShop(shop.id);
-            if (response) {
-              snackBar.showSnackBar(
-                const SnackBar(
-                  content: Text('Magasin supprimé'),
-                ),
-              );
-              handleShopDeleted(shop);
-            } else {
-              snackBar.showSnackBar(
-                const SnackBar(
-                  content: Text('Erreur lors de la suppression du magasin'),
-                ),
-              );
-            }
-          },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.blue,
+              ),
+              onPressed: () {
+                final TextEditingController nameController =
+                    TextEditingController(text: shop.name);
+                nameController.text = shop.name;
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Editer le magasin'),
+                    content: TextField(
+                      decoration:
+                          const InputDecoration(labelText: 'Nom du magasin'),
+                      controller: nameController,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Annuler'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          ShopAPI shopApi = ShopAPI();
+                          ScaffoldMessengerState snackBar =
+                              ScaffoldMessenger.of(context);
+                          final String name = nameController.text.trim();
+                          Navigator.of(context).pop();
+                          Shop editedShop =
+                              await shopApi.updateShop(shop.id, {'name': name});
+                          handleShopAction('update', editedShop);
+                          if (editedShop.name == name) {
+                            snackBar.showSnackBar(
+                              const SnackBar(
+                                content: Text('Magasin modifié'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          } else {
+                            snackBar.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Erreur lors de la modification du magasin'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Modifier'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () async {
+                ShopAPI shopApi = ShopAPI();
+                ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
+                bool response = await shopApi.deleteShop(shop.id);
+                if (response) {
+                  snackBar.showSnackBar(
+                    const SnackBar(
+                      content: Text('Magasin supprimé'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                  handleShopAction('delete', shop);
+                } else {
+                  snackBar.showSnackBar(
+                    const SnackBar(
+                      content: Text('Erreur lors de la suppression du magasin'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         ),
         onTap: () {
           // Navigator.of(context).pushNamed('/shops/${shop.id}');

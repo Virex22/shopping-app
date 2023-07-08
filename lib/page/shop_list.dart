@@ -20,9 +20,13 @@ class ShopListPageState extends State<ShopListPage> {
     _fetchShops();
   }
 
-  handleShopDeleted(Shop shop) {
+  handleAction(String action, Shop shop) {
     setState(() {
-      _shops.remove(shop);
+      if (action == 'delete') {
+        _shops.remove(shop);
+      } else if (action == 'update') {
+        _shops[_shops.indexWhere((element) => element.id == shop.id)] = shop;
+      }
     });
   }
 
@@ -86,7 +90,7 @@ class ShopListPageState extends State<ShopListPage> {
                 final shop = _shops[index];
                 return ShopTile(
                   shop: shop,
-                  handleShopDeleted: handleShopDeleted,
+                  handleShopAction: handleAction,
                 );
               },
             ),
