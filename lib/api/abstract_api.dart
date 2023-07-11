@@ -41,7 +41,7 @@ abstract class AbstractAPI {
       final response = await dio.post(path, data: data);
       return response;
     } catch (e) {
-      throw Exception('Erreur lors de la requête POST : $e');
+      throw Exception('Erreur lors de la requête POST reponse de dio : $e ');
     }
   }
 
