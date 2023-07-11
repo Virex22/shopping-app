@@ -11,7 +11,7 @@ class ShopTile extends StatelessWidget {
       : super(key: key);
 
   void navigateOnShop(BuildContext context) {
-    context.go('/products/${shop.id}');
+    context.go('/shops/${shop.id}/products');
   }
 
   @override

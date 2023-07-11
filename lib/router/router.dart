@@ -12,14 +12,16 @@ final router = GoRouter(
           builder: (context, routeurState) => const HomePage(),
           routes: [
             GoRoute(
-              path: 'shops',
-              builder: (context, routeurState) => const ShopListPage(),
-            ),
-            GoRoute(
-              path: 'products/:shopId',
-              builder: (context, routeurState) => ProductListPage(
-                  shopId: int.parse(routeurState.pathParameters['shopId']!)),
-            ),
+                path: 'shops',
+                builder: (context, routeurState) => const ShopListPage(),
+                routes: [
+                  GoRoute(
+                    path: ':shopId/products',
+                    builder: (context, routeurState) => ProductListPage(
+                        shopId:
+                            int.parse(routeurState.pathParameters['shopId']!)),
+                  ),
+                ]),
           ]),
     ],
     errorBuilder: (context, state) => const ErrorPage(),
