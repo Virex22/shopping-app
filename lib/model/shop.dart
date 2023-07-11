@@ -2,6 +2,7 @@ class Shop {
   final int id;
   final String name;
   final DateTime dateAdd;
+  get iri => '/shops/$id';
 
   Shop({
     required this.id,
