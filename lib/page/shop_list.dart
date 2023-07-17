@@ -26,6 +26,8 @@ class ShopListPageState extends State<ShopListPage> {
         _shops.remove(shop);
       } else if (action == 'update') {
         _shops[_shops.indexWhere((element) => element.id == shop.id)] = shop;
+      } else if (action == 'refresh') {
+        _shops.add(shop);
       }
     });
   }

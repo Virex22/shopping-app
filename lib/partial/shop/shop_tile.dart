@@ -19,9 +19,24 @@ class ShopTile extends StatelessWidget {
     return Card(
       elevation: 2,
       child: ListTile(
-        title: Text(
-          shop.name,
-          style: Theme.of(context).textTheme.titleLarge,
+        title: Row(
+          children: [
+            Text(
+              shop.name,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text(
+              ' (${shop.productsCount} produit${shop.productsCount > 1 ? 's' : ''})',
+              style: TextStyle(
+                //small bottom text
+                color: Theme.of(context).primaryColor.withOpacity(0.5),
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+        subtitle: Text(
+          'ID: ${shop.id}',
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
