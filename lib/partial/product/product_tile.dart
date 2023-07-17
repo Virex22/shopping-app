@@ -84,19 +84,46 @@ class ProductTile extends StatelessWidget {
                 Icons.delete,
                 color: Colors.red,
               ),
-              onPressed: () async {
-                final productApi = ProductAPI();
-                bool response = await productApi.deleteProduct(product.id);
-                if (response) {
-                  handleProductAction('delete', product);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Erreur lors de la suppression du produit'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
+              onPressed: () {
+                // confirm delete
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Supprimer le produit'),
+                    content: const Text(
+                        'Êtes-vous sûr de vouloir supprimer ce produit ?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Annuler'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          final productApi = ProductAPI();
+                          ScaffoldMessengerState scaffoldMessengerState =
+                              ScaffoldMessenger.of(context);
+                          bool response =
+                              await productApi.deleteProduct(product.id);
+                          if (response) {
+                            handleProductAction('delete', product);
+                          } else {
+                            scaffoldMessengerState.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Erreur lors de la suppression du produit'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Supprimer',
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ],

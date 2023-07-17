@@ -128,6 +128,8 @@ class ProductListPageState extends State<ProductListPage> {
                 return;
               }
 
+              NavigatorState navigatorState = Navigator.of(context);
+
               final productApi = ProductAPI();
               final newProduct = await productApi.addProduct({
                 'name': name,
@@ -139,7 +141,7 @@ class ProductListPageState extends State<ProductListPage> {
                 _products.add(newProduct);
               });
 
-              Navigator.of(context).pop();
+              navigatorState.pop();
             },
             child: const Text('Ajouter'),
           ),

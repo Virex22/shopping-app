@@ -91,25 +91,50 @@ class ShopTile extends StatelessWidget {
                 color: Colors.red,
               ),
               onPressed: () async {
-                ShopAPI shopApi = ShopAPI();
-                ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
-                bool response = await shopApi.deleteShop(shop.id);
-                if (response) {
-                  snackBar.showSnackBar(
-                    const SnackBar(
-                      content: Text('Magasin supprimé'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                  handleShopAction('delete', shop);
-                } else {
-                  snackBar.showSnackBar(
-                    const SnackBar(
-                      content: Text('Erreur lors de la suppression du magasin'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                }
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Supprimer le magasin'),
+                    content: const Text(
+                        'Êtes-vous sûr de vouloir supprimer ce magasin ?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Annuler'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          ShopAPI shopApi = ShopAPI();
+                          Navigator.of(context).pop();
+                          ScaffoldMessengerState snackBar =
+                              ScaffoldMessenger.of(context);
+                          bool response = await shopApi.deleteShop(shop.id);
+                          if (response) {
+                            snackBar.showSnackBar(
+                              const SnackBar(
+                                content: Text('Magasin supprimé'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                            handleShopAction('delete', shop);
+                          } else {
+                            snackBar.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Erreur lors de la suppression du magasin'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Supprimer',
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
             IconButton(
