@@ -104,6 +104,7 @@ class ProductTile extends StatelessWidget {
                           final productApi = ProductAPI();
                           ScaffoldMessengerState scaffoldMessengerState =
                               ScaffoldMessenger.of(context);
+                          NavigatorState navigatorState = Navigator.of(context);
                           bool response =
                               await productApi.deleteProduct(product.id);
                           if (response) {
@@ -117,6 +118,7 @@ class ProductTile extends StatelessWidget {
                               ),
                             );
                           }
+                          navigatorState.pop();
                         },
                         child: const Text('Supprimer',
                             style: TextStyle(color: Colors.red)),
