@@ -22,7 +22,7 @@ class ShopTile extends StatelessWidget {
         title: Row(
           children: [
             Text(
-              shop.name,
+              shop.name.toUpperCase(),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
