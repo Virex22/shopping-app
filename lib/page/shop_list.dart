@@ -36,7 +36,6 @@ class ShopListPageState extends State<ShopListPage> {
   @override
   Widget build(BuildContext context) {
     final productProvider = context.watch<ProductProvider>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des magasins'),
@@ -57,20 +56,24 @@ class ShopListPageState extends State<ShopListPage> {
           ),
         ],
       ),
-      body: productProvider.shops.isEmpty
+      body: productProvider.shops == null
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: _productProvider.shops.length,
-              itemBuilder: (context, index) {
-                final shop = _productProvider.shops[index];
-                return ShopTile(
-                  shop: shop,
-                  handleShopAction: handleAction,
-                );
-              },
-            ),
+          : productProvider.shops!.isEmpty
+              ? const Center(
+                  child: Text('Aucun magasin n\'est enrégistré'),
+                )
+              : ListView.builder(
+                  itemCount: _productProvider.shops!.length,
+                  itemBuilder: (context, index) {
+                    final shop = _productProvider.shops![index];
+                    return ShopTile(
+                      shop: shop,
+                      handleShopAction: handleAction,
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final TextEditingController nameController = TextEditingController();

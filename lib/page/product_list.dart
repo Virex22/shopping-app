@@ -18,10 +18,10 @@ class ProductListPageState extends State<ProductListPage> {
   ProductProvider get _productProvider => context.read<ProductProvider>();
 
   List<Product>? getProductList() {
-    final index = _productProvider.shops
+    final index = _productProvider.shops!
         .indexWhere((element) => element.id == widget.shopId);
     if (index != -1) {
-      return _productProvider.shops[index].product;
+      return _productProvider.shops![index].product;
     }
     return null;
   }
@@ -37,10 +37,10 @@ class ProductListPageState extends State<ProductListPage> {
       if (action == 'delete') {
         _productProvider.deleteProduct(widget.shopId, product.id);
       } else if (action == 'update') {
-        final index = _productProvider.shops
+        final index = _productProvider.shops!
             .indexWhere((element) => element.id == widget.shopId);
         if (index != -1) {
-          _productProvider.shops[index].updateProduct(product);
+          _productProvider.shops![index].updateProduct(product);
         }
       }
     });
@@ -151,16 +151,21 @@ class ProductListPageState extends State<ProductListPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: getProductList()!.length,
-              itemBuilder: (context, index) {
-                final product = getProductList()![index];
-                return ProductTile(
-                  product: product,
-                  handleProductAction: _handleAction,
-                );
-              },
-            ),
+          : getProductList()!.isEmpty
+              ? const Center(
+                  child:
+                      Text('Aucun produit n\'est enrégistré dans ce magasin'),
+                )
+              : ListView.builder(
+                  itemCount: getProductList()!.length,
+                  itemBuilder: (context, index) {
+                    final product = getProductList()![index];
+                    return ProductTile(
+                      product: product,
+                      handleProductAction: _handleAction,
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _addProduct(context);
