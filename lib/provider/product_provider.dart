@@ -5,7 +5,7 @@ import 'package:shopping_app/model/shop.dart';
 class ProductProvider with ChangeNotifier {
   final List<Shop> _shops = [];
 
-  List<Shop> get shops => _shops;
+  List<Shop> get shops => List.unmodifiable(_shops);
 
   updateShopProductsFromApi(int shopId) {
     Shop shop = _shops.firstWhere((element) => element.id == shopId);

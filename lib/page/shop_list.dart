@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app/api/shop_api.dart';
 import 'package:shopping_app/model/shop.dart';
 import 'package:shopping_app/partial/shop/shop_tile.dart';
+import 'package:shopping_app/provider/product_provider.dart';
 
 class ShopListPage extends StatefulWidget {
   const ShopListPage({Key? key}) : super(key: key);
@@ -11,29 +13,28 @@ class ShopListPage extends StatefulWidget {
 }
 
 class ShopListPageState extends State<ShopListPage> {
-  List<Shop> _shops = [];
-  bool _isLoading = false;
+  ProductProvider get _productProvider => context.read<ProductProvider>();
 
   @override
   void initState() {
     super.initState();
-    _fetchShops();
+    _productProvider.refreshShopListFromApi();
   }
 
   handleAction(String action, Shop shop) {
     setState(() {
       if (action == 'delete') {
-        _shops.remove(shop);
+        _productProvider.removeShop(shop.id);
       } else if (action == 'update') {
-        _shops[_shops.indexWhere((element) => element.id == shop.id)] = shop;
+        _productProvider.updateShop(shop);
       } else if (action == 'refresh') {
-        _shops.add(shop);
+        _productProvider.refreshShopListFromApi();
       }
     });
   }
 
   Future<void> _fetchShops() async {
-    setState(() {
+    /*setState(() {
       _isLoading = true;
     });
 
@@ -64,32 +65,34 @@ class ShopListPageState extends State<ShopListPage> {
           ],
         ),
       );
-    }
+    }*/
   }
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = context.watch<ProductProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des magasins'),
         actions: [
           IconButton(
             onPressed: () {
-              _fetchShops();
+              productProvider.refreshShopListFromApi();
             },
             tooltip: 'Rafraîchir',
             icon: const Icon(Icons.refresh),
           ),
         ],
       ),
-      body: _isLoading
+      body: productProvider.shops.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: _shops.length,
+              itemCount: _productProvider.shops.length,
               itemBuilder: (context, index) {
-                final shop = _shops[index];
+                final shop = _productProvider.shops[index];
                 return ShopTile(
                   shop: shop,
                   handleShopAction: handleAction,
@@ -124,7 +127,7 @@ class ShopListPageState extends State<ShopListPage> {
                     final shopApi = ShopAPI();
                     Shop newShop = await shopApi.addShop({'name': name});
                     setState(() {
-                      _shops.add(newShop);
+                      _productProvider.addShop(newShop);
                     });
                   },
                   child: const Text('Ajouter'),
