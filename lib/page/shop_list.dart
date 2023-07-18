@@ -33,41 +33,6 @@ class ShopListPageState extends State<ShopListPage> {
     });
   }
 
-  Future<void> _fetchShops() async {
-    /*setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final shopApi = ShopAPI();
-      final List<Shop> shops = await shopApi.getAllShops();
-      setState(() {
-        _shops = shops;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: Text(
-              'Une erreur s\'est produite lors du chargement des magasins. Erreur: ${e.toString()}'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }*/
-  }
-
   @override
   Widget build(BuildContext context) {
     final productProvider = context.watch<ProductProvider>();
@@ -77,8 +42,15 @@ class ShopListPageState extends State<ShopListPage> {
         title: const Text('Liste des magasins'),
         actions: [
           IconButton(
-            onPressed: () {
-              productProvider.refreshShopListFromApi();
+            onPressed: () async {
+              ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+              await productProvider.refreshShopListFromApi();
+              messenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Liste des magasins mise à jour'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
             tooltip: 'Rafraîchir',
             icon: const Icon(Icons.refresh),

@@ -64,42 +64,6 @@ class ProductListPageState extends State<ProductListPage> {
     }
   }
 
-  Future<void> _fetchProducts() async {
-    /*setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final productApi = ProductAPI();
-      final List<Product> products =
-          await productApi.getProductsByShopId(widget.shopId);
-      setState(() {
-        _products = products;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: Text(
-              'Une erreur s\'est produite lors du chargement des produits. Erreur: ${e.toString()}'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }*/
-  }
-
   void _addProduct(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController priceController = TextEditingController();
@@ -168,8 +132,15 @@ class ProductListPageState extends State<ProductListPage> {
         title: const Text('Liste des produits'),
         actions: [
           IconButton(
-            onPressed: () {
-              _fetchProducts();
+            onPressed: () async {
+              ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+              await productProvider.updateShopProductsFromApi(widget.shopId);
+              messenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Liste des produits mise à jour'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
             tooltip: 'Rafraîchir',
             icon: const Icon(Icons.refresh),
