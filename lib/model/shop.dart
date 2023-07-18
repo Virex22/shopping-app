@@ -23,6 +23,19 @@ class Shop {
     product = await api.getProductsByShopId(id);
   }
 
+  removeProduct(int productId) {
+    product!.removeWhere((element) => element.id == productId);
+  }
+
+  addProduct(Product product) {
+    this.product!.add(product);
+  }
+
+  updateProduct(Product product) {
+    int index = this.product!.indexWhere((element) => element.id == product.id);
+    this.product![index] = product;
+  }
+
   factory Shop.fromJson(Map<String, dynamic> json) {
     return Shop(
       id: json['id'],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/partial/product/product_tile.dart';
+import 'package:shopping_app/provider/product_provider.dart';
 
 class ProductListPage extends StatefulWidget {
   final int shopId;
@@ -13,24 +15,32 @@ class ProductListPage extends StatefulWidget {
 }
 
 class ProductListPageState extends State<ProductListPage> {
-  List<Product> _products = [];
-  bool _isLoading = false;
+  ProductProvider get _productProvider => context.read<ProductProvider>();
+
+  List<Product>? getProductList() {
+    final index = _productProvider.shops
+        .indexWhere((element) => element.id == widget.shopId);
+    if (index != -1) {
+      return _productProvider.shops[index].product;
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchProducts();
+    _productProvider.updateShopProductsFromApi(widget.shopId);
   }
 
   void _handleAction(String action, Product product) {
     setState(() {
       if (action == 'delete') {
-        _products.remove(product);
+        _productProvider.deleteProduct(widget.shopId, product.id);
       } else if (action == 'update') {
-        final index =
-            _products.indexWhere((element) => element.id == product.id);
+        final index = _productProvider.shops
+            .indexWhere((element) => element.id == widget.shopId);
         if (index != -1) {
-          _products[index] = product;
+          _productProvider.shops[index].updateProduct(product);
         }
       }
     });
@@ -55,7 +65,7 @@ class ProductListPageState extends State<ProductListPage> {
   }
 
   Future<void> _fetchProducts() async {
-    setState(() {
+    /*setState(() {
       _isLoading = true;
     });
 
@@ -87,7 +97,7 @@ class ProductListPageState extends State<ProductListPage> {
           ],
         ),
       );
-    }
+    }*/
   }
 
   void _addProduct(BuildContext context) {
@@ -138,7 +148,7 @@ class ProductListPageState extends State<ProductListPage> {
               });
 
               setState(() {
-                _products.add(newProduct);
+                _productProvider.addProduct(widget.shopId, newProduct);
               });
 
               navigatorState.pop();
@@ -152,6 +162,7 @@ class ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
+    ProductProvider productProvider = context.watch<ProductProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des produits'),
@@ -165,14 +176,14 @@ class ProductListPageState extends State<ProductListPage> {
           ),
         ],
       ),
-      body: _isLoading
+      body: (getProductList() == null)
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: _products.length,
+              itemCount: getProductList()!.length,
               itemBuilder: (context, index) {
-                final product = _products[index];
+                final product = getProductList()![index];
                 return ProductTile(
                   product: product,
                   handleProductAction: _handleAction,

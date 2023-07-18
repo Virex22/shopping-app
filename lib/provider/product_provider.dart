@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shopping_app/api/shop_api.dart';
+import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/model/shop.dart';
 
 class ProductProvider with ChangeNotifier {
@@ -7,9 +8,15 @@ class ProductProvider with ChangeNotifier {
 
   List<Shop> get shops => List.unmodifiable(_shops);
 
-  updateShopProductsFromApi(int shopId) {
-    Shop shop = _shops.firstWhere((element) => element.id == shopId);
-    shop.updateProductFromApi();
+  updateShopProductsFromApi(int shopId) async {
+    if (_shops.where((element) => element.id == shopId).isEmpty) {
+      await refreshShopListFromApi();
+      if (_shops.where((element) => element.id == shopId).isEmpty) {
+        throw Exception('Shop not found');
+      }
+    }
+    final Shop shop = _shops.firstWhere((element) => element.id == shopId);
+    await shop.updateProductFromApi();
     notifyListeners();
   }
 
@@ -29,12 +36,31 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  refreshShopListFromApi() {
+  refreshShopListFromApi() async {
     ShopAPI api = ShopAPI();
-    api.getAllShops().then((value) {
-      _shops.clear();
-      _shops.addAll(value);
-      notifyListeners();
-    });
+    List<Shop> shops = await api.getAllShops();
+    _shops.clear();
+    _shops.addAll(shops);
+    notifyListeners();
+  }
+
+  deleteProduct(int shopId, int productId) {
+    Shop shop = _shops.firstWhere((element) => element.id == shopId);
+    shop.removeProduct(productId);
+    shop.productsCount--;
+    notifyListeners();
+  }
+
+  addProduct(int shopId, Product product) {
+    Shop shop = _shops.firstWhere((element) => element.id == shopId);
+    shop.addProduct(product);
+    shop.productsCount++;
+    notifyListeners();
+  }
+
+  updateProduct(int shopId, Product product) {
+    Shop shop = _shops.firstWhere((element) => element.id == shopId);
+    shop.updateProduct(product);
+    notifyListeners();
   }
 }
