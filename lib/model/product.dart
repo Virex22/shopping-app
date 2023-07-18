@@ -1,14 +1,19 @@
+import 'package:shopping_app/model/shop.dart';
+
 class Product {
-  final int id;
-  final String name;
-  final double price;
-  final DateTime dateAdd;
+  int id;
+  String name;
+  double price;
+  DateTime dateAdd;
+  get iri => '/products/$id';
+  Shop? shop;
 
   Product(
       {required this.id,
       required this.name,
       required this.price,
-      required this.dateAdd});
+      required this.dateAdd,
+      this.shop});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(

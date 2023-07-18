@@ -1,16 +1,27 @@
+import 'package:shopping_app/api/product_api.dart';
+import 'package:shopping_app/model/product.dart';
+
 class Shop {
-  final int id;
-  final String name;
-  final DateTime dateAdd;
-  final int productsCount;
+  int id;
+  String name;
+  DateTime dateAdd;
+  int productsCount;
   get iri => '/shops/$id';
+
+  List<Product>? product;
 
   Shop({
     required this.id,
     required this.name,
     required this.dateAdd,
     required this.productsCount,
+    this.product,
   });
+
+  updateProductFromApi() async {
+    ProductAPI api = ProductAPI();
+    product = await api.getProductsByShopId(id);
+  }
 
   factory Shop.fromJson(Map<String, dynamic> json) {
     return Shop(
