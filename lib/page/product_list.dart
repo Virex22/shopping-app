@@ -4,6 +4,7 @@ import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/partial/product/product_tile.dart';
 import 'package:shopping_app/provider/product_provider.dart';
+import 'package:shopping_app/partial/component/search_bar.dart' as AppSearchBar;
 
 class ProductListPage extends StatefulWidget {
   final int shopId;
@@ -16,6 +17,8 @@ class ProductListPage extends StatefulWidget {
 
 class ProductListPageState extends State<ProductListPage> {
   ProductProvider get _productProvider => context.read<ProductProvider>();
+  String search = '';
+  bool isSearching = false;
 
   List<Product>? getProductList() {
     if (_productProvider.shops == null) {
@@ -24,6 +27,12 @@ class ProductListPageState extends State<ProductListPage> {
     final index = _productProvider.shops!
         .indexWhere((element) => element.id == widget.shopId);
     if (index != -1) {
+      if (search.isNotEmpty && _productProvider.shops![index].product != null) {
+        return _productProvider.shops![index].product!
+            .where((element) =>
+                element.name.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      }
       return _productProvider.shops![index].product;
     }
     return null;
@@ -134,41 +143,65 @@ class ProductListPageState extends State<ProductListPage> {
       appBar: AppBar(
         title: const Text('Liste des produits'),
         actions: [
-          IconButton(
-            onPressed: () async {
-              ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-              await productProvider.updateShopProductsFromApi(widget.shopId);
-              messenger.showSnackBar(
-                const SnackBar(
-                  content: Text('Liste des produits mise à jour'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
-            tooltip: 'Rafraîchir',
-            icon: const Icon(Icons.refresh),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    isSearching = !isSearching;
+                  });
+                },
+                icon: const Icon(Icons.search),
+              ),
+              IconButton(
+                onPressed: () async {
+                  ScaffoldMessengerState messenger =
+                      ScaffoldMessenger.of(context);
+                  await productProvider
+                      .updateShopProductsFromApi(widget.shopId);
+                  messenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('Liste des produits mise à jour'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                tooltip: 'Rafraîchir',
+                icon: const Icon(Icons.refresh),
+              ),
+            ],
           ),
         ],
       ),
-      body: getProductList() == null
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : getProductList()!.isEmpty
-              ? const Center(
-                  child:
-                      Text('Aucun produit n\'est enrégistré dans ce magasin'),
-                )
-              : ListView.builder(
-                  itemCount: getProductList()!.length,
-                  itemBuilder: (context, index) {
-                    final product = getProductList()![index];
-                    return ProductTile(
-                      product: product,
-                      handleProductAction: _handleAction,
-                    );
-                  },
-                ),
+      body: AppSearchBar.SearchBar(
+        showSearchBar: isSearching,
+        onTextChanged: (changedText) {
+          setState(() {
+            search = changedText;
+          });
+        },
+        content: getProductList() == null
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : getProductList()!.isEmpty
+                ? const Center(
+                    child:
+                        Text('Aucun produit n\'est enrégistré dans ce magasin'),
+                  )
+                : ListView.builder(
+                    itemCount: getProductList()!.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final product = getProductList()![index];
+                      return ProductTile(
+                        product: product,
+                        handleProductAction: _handleAction,
+                      );
+                    },
+                  ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _addProduct(context);
