@@ -21,16 +21,22 @@ class ShopTile extends StatelessWidget {
       child: ListTile(
         title: Row(
           children: [
-            Text(
-              shop.name.toUpperCase(),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              ' (${shop.productsCount} produit${shop.productsCount > 1 ? 's' : ''})',
-              style: TextStyle(
-                //small bottom text
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                fontSize: 12,
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.labelLarge,
+                  children: [
+                    TextSpan(text: shop.name.toUpperCase()),
+                    TextSpan(
+                      text:
+                          ' (${shop.productsCount} produit${shop.productsCount > 1 ? 's' : ''})',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor.withOpacity(0.5),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
