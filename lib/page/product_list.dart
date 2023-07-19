@@ -18,6 +18,9 @@ class ProductListPageState extends State<ProductListPage> {
   ProductProvider get _productProvider => context.read<ProductProvider>();
 
   List<Product>? getProductList() {
+    if (_productProvider.shops == null) {
+      return null;
+    }
     final index = _productProvider.shops!
         .indexWhere((element) => element.id == widget.shopId);
     if (index != -1) {
@@ -147,7 +150,7 @@ class ProductListPageState extends State<ProductListPage> {
           ),
         ],
       ),
-      body: (getProductList() == null)
+      body: getProductList() == null
           ? const Center(
               child: CircularProgressIndicator(),
             )

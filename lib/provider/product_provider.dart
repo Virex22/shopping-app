@@ -9,7 +9,7 @@ class ProductProvider with ChangeNotifier {
   List<Shop>? get shops => _shops == null ? null : List.unmodifiable(_shops!);
 
   updateShopProductsFromApi(int shopId) async {
-    if (_shops!.where((element) => element.id == shopId).isEmpty) {
+    if (_shops == null) {
       await refreshShopListFromApi();
       if (_shops!.where((element) => element.id == shopId).isEmpty) {
         throw Exception('Shop not found');
