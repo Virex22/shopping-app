@@ -186,9 +186,10 @@ class ProductListPageState extends State<ProductListPage> {
                 child: CircularProgressIndicator(),
               )
             : getProductList()!.isEmpty
-                ? const Center(
-                    child:
-                        Text('Aucun produit n\'est enrégistré dans ce magasin'),
+                ? Center(
+                    child: Text(isSearching
+                        ? 'Aucun produit ne correspond à votre recherche'
+                        : 'Aucun produit n\'est enrégistré dans ce magasin'),
                   )
                 : ListView.builder(
                     itemCount: getProductList()!.length,
