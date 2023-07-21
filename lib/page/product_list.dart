@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/partial/component/dialog/product_dialog.dart';
 import 'package:shopping_app/partial/product/product_tile.dart';
 import 'package:shopping_app/provider/product_provider.dart';
 import 'package:shopping_app/partial/component/search_bar.dart'
@@ -69,63 +70,26 @@ class ProductListPageState extends State<ProductListPage> {
   }
 
   void _addProduct(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController priceController = TextEditingController();
+    showProductFormDialog(
+        context: context,
+        title: 'Ajouter un produit',
+        validationText: 'Ajouter',
+        validationAction: (name, price) async {
+          if (name.isEmpty || price <= 0) {
+            return;
+          }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Ajouter un produit'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Nom du produit'),
-              controller: nameController,
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Prix du produit'),
-              controller: priceController,
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final String name = nameController.text.trim();
-              final double price = double.tryParse(priceController.text) ?? 0.0;
+          final productApi = ProductAPI();
+          final newProduct = await productApi.addProduct({
+            'name': name,
+            'price': price,
+            'shop': '/api/shops/${widget.shopId}',
+          });
 
-              if (name.isEmpty || price <= 0) {
-                return;
-              }
-
-              NavigatorState navigatorState = Navigator.of(context);
-
-              final productApi = ProductAPI();
-              final newProduct = await productApi.addProduct({
-                'name': name,
-                'price': price,
-                'shop': '/api/shops/${widget.shopId}',
-              });
-
-              setState(() {
-                _productProvider.addProduct(widget.shopId, newProduct);
-              });
-
-              navigatorState.pop();
-            },
-            child: const Text('Ajouter'),
-          ),
-        ],
-      ),
-    );
+          setState(() {
+            _productProvider.addProduct(widget.shopId, newProduct);
+          });
+        });
   }
 
   @override

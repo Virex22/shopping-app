@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 
-void showShopFormDialog({
+void showProductFormDialog({
   required BuildContext context,
   required String title,
   required String validationText,
-  required Function(String name) validationAction,
+  required Function(String name, double price) validationAction,
   String annulationText = 'Annuler',
 }) {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(title),
-      content: TextField(
-        decoration: const InputDecoration(labelText: 'Nom du magasin'),
-        controller: nameController,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            decoration: const InputDecoration(labelText: 'Nom du produit'),
+            controller: nameController,
+          ),
+          TextField(
+            decoration: const InputDecoration(labelText: 'Prix du produit'),
+            controller: priceController,
+            keyboardType: TextInputType.number,
+          ),
+        ],
       ),
       actions: [
         TextButton(
@@ -26,8 +37,9 @@ void showShopFormDialog({
         TextButton(
           onPressed: () async {
             final String name = nameController.text.trim();
+            final double price = double.tryParse(priceController.text) ?? 0.0;
             Navigator.of(context).pop();
-            validationAction(name);
+            validationAction(name, price);
           },
           child: Text(validationText),
         ),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/api/shop_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/shop.dart';
+import 'package:shopping_app/partial/component/dialog/shop_dialog.dart';
 import 'package:shopping_app/partial/shop/shop_tile.dart';
 import 'package:shopping_app/provider/product_provider.dart';
 
@@ -74,39 +75,17 @@ class ShopListPageState extends State<ShopListPage> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final TextEditingController nameController = TextEditingController();
-          showDialog(
+          showShopFormDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Ajouter un magasin'),
-              content: TextField(
-                decoration: const InputDecoration(labelText: 'Nom du magasin'),
-                controller: nameController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Annuler'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    final String name = nameController.text.trim();
-                    Navigator.of(context).pop();
-                    if (name.isEmpty) {
-                      return;
-                    }
-                    final shopApi = ShopAPI();
-                    Shop newShop = await shopApi.addShop({'name': name});
-                    setState(() {
-                      _productProvider.addShop(newShop);
-                    });
-                  },
-                  child: const Text('Ajouter'),
-                ),
-              ],
-            ),
+            title: 'Ajouter un magasin',
+            validationText: 'Ajouter',
+            validationAction: (name) async {
+              final shopApi = ShopAPI();
+              Shop newShop = await shopApi.addShop({'name': name});
+              setState(() {
+                _productProvider.addShop(newShop);
+              });
+            },
           );
         },
         child:

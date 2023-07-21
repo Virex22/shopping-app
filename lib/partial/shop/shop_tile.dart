@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shopping_app/api/shop_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/shop.dart';
+import 'package:shopping_app/partial/component/dialog/delete_dialog.dart';
 import 'package:shopping_app/partial/component/dialog/shop_dialog.dart';
 
 class ShopTile extends StatelessWidget {
@@ -58,42 +59,23 @@ class ShopTile extends StatelessWidget {
                 final TextEditingController nameController =
                     TextEditingController(text: shop.name);
                 nameController.text = shop.name;
-                showDialog(
+                showShopFormDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Editer le magasin'),
-                    content: TextField(
-                      decoration:
-                          const InputDecoration(labelText: 'Nom du magasin'),
-                      controller: nameController,
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Annuler'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          ShopAPI shopApi = ShopAPI();
-                          ScaffoldMessengerState snackBar =
-                              ScaffoldMessenger.of(context);
-                          final String name = nameController.text.trim();
-                          Navigator.of(context).pop();
-                          Shop editedShop =
-                              await shopApi.updateShop(shop.id, {'name': name});
-                          handleShopAction('update', editedShop);
-                          showSnackBar(
-                              snackBar: snackBar,
-                              message: editedShop.name == name
-                                  ? 'Magasin modifié'
-                                  : 'Erreur lors de la modification du magasin');
-                        },
-                        child: const Text('Modifier'),
-                      ),
-                    ],
-                  ),
+                  title: 'Editer le magasin',
+                  validationText: 'Modifier',
+                  validationAction: (String name) async {
+                    ShopAPI shopApi = ShopAPI();
+                    ScaffoldMessengerState snackBar =
+                        ScaffoldMessenger.of(context);
+                    Shop editedShop =
+                        await shopApi.updateShop(shop.id, {'name': name});
+                    handleShopAction('update', editedShop);
+                    showSnackBar(
+                        snackBar: snackBar,
+                        message: editedShop.name == name
+                            ? 'Magasin modifié'
+                            : 'Erreur lors de la modification du magasin');
+                  },
                 );
               },
             ),
@@ -102,11 +84,21 @@ class ShopTile extends StatelessWidget {
                 Icons.delete,
                 color: Colors.red,
               ),
-              onPressed: () async {
-                showShopDeleteDialog(
+              onPressed: () {
+                showDeleteDialog(
                     context: context,
-                    handleShopAction: handleShopAction,
-                    shop: shop);
+                    handleOnDelete: () async {
+                      ShopAPI shopApi = ShopAPI();
+                      ScaffoldMessengerState snackBar =
+                          ScaffoldMessenger.of(context);
+                      bool response = await shopApi.deleteShop(shop.id);
+                      showSnackBar(
+                          snackBar: snackBar,
+                          message: response
+                              ? 'Magasin supprimé'
+                              : 'Erreur lors de la suppression du magasin');
+                      if (response) handleShopAction('delete', shop);
+                    });
               },
             ),
             IconButton(

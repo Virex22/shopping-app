@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/partial/component/dialog/delete_dialog.dart';
+import 'package:shopping_app/partial/component/dialog/product_dialog.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
@@ -14,58 +16,37 @@ class ProductTile extends StatelessWidget {
   }) : super(key: key);
 
   void _editProduct(BuildContext context) {
-    final TextEditingController nameController =
-        TextEditingController(text: product.name);
-    final TextEditingController priceController =
-        TextEditingController(text: product.price.toString());
-    nameController.text = product.name;
+    showProductFormDialog(
+        context: context,
+        title: 'Modifier le produit',
+        validationText: 'Modifier',
+        validationAction: (String name, double price) async {
+          if (name.isEmpty || price <= 0) {
+            return;
+          }
+          final productApi = ProductAPI();
+          Product editedProduct = await productApi
+              .updateProduct(product.id, {'name': name, 'price': price});
+          handleProductAction('update', editedProduct);
+        });
+  }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Modifier le produit'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Nom du produit'),
-              controller: nameController,
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Prix du produit'),
-              controller: priceController,
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final String name = nameController.text.trim();
-              final double price = double.tryParse(priceController.text) ?? 0.0;
-              Navigator.of(context).pop();
-
-              if (name.isEmpty) {
-                return;
-              }
-
-              final productApi = ProductAPI();
-              Product editedProduct = await productApi
-                  .updateProduct(product.id, {'name': name, 'price': price});
-
-              handleProductAction('update', editedProduct);
-            },
-            child: const Text('Modifier'),
-          ),
-        ],
-      ),
-    );
+  void _deleteProduct(BuildContext context) {
+    showDeleteDialog(
+        context: context,
+        subtitle: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+        handleOnDelete: () async {
+          final productApi = ProductAPI();
+          ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
+          bool response = await productApi.deleteProduct(product.id);
+          if (response) {
+            handleProductAction('delete', product);
+          } else {
+            showSnackBar(
+                snackBar: snackBar,
+                message: 'Erreur lors de la suppression du produit');
+          }
+        });
   }
 
   @override
@@ -99,44 +80,7 @@ class ProductTile extends StatelessWidget {
                 color: Colors.red,
               ),
               onPressed: () {
-                // confirm delete
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Supprimer le produit'),
-                    content: const Text(
-                        'Êtes-vous sûr de vouloir supprimer ce produit ?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Annuler'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          final productApi = ProductAPI();
-                          ScaffoldMessengerState snackBar =
-                              ScaffoldMessenger.of(context);
-                          NavigatorState navigatorState = Navigator.of(context);
-                          bool response =
-                              await productApi.deleteProduct(product.id);
-                          if (response) {
-                            handleProductAction('delete', product);
-                          } else {
-                            showSnackBar(
-                                snackBar: snackBar,
-                                message:
-                                    'Erreur lors de la suppression du produit');
-                          }
-                          navigatorState.pop();
-                        },
-                        child: const Text('Supprimer',
-                            style: TextStyle(color: Colors.red)),
-                      ),
-                    ],
-                  ),
-                );
+                _deleteProduct(context);
               },
             ),
           ],
