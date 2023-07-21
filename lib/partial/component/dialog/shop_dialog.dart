@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/model/shop.dart';
 
 void showShopFormDialog({
   required BuildContext context,
@@ -6,8 +7,10 @@ void showShopFormDialog({
   required String validationText,
   required Function(String name) validationAction,
   String annulationText = 'Annuler',
+  Shop? shopModel,
 }) {
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nameController =
+      TextEditingController(text: shopModel?.name);
   showDialog(
     context: context,
     builder: (context) => AlertDialog(

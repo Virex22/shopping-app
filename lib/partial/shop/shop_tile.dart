@@ -17,6 +17,38 @@ class ShopTile extends StatelessWidget {
     context.go('/shops/${shop.id}/products');
   }
 
+  void _editShop(BuildContext context) {
+    showShopFormDialog(
+        context: context,
+        title: 'Modifier le magasin',
+        validationText: 'Modifier',
+        shopModel: shop,
+        validationAction: (String name) async {
+          if (name.isEmpty) {
+            return;
+          }
+          final shopApi = ShopAPI();
+          Shop editedShop = await shopApi.updateShop(shop.id, {'name': name});
+          handleShopAction('update', editedShop);
+        });
+  }
+
+  void _deleteShop(BuildContext context) {
+    showDeleteDialog(
+        context: context,
+        handleOnDelete: () async {
+          ShopAPI shopApi = ShopAPI();
+          ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
+          bool response = await shopApi.deleteShop(shop.id);
+          showSnackBar(
+              snackBar: snackBar,
+              message: response
+                  ? 'Magasin supprimé'
+                  : 'Erreur lors de la suppression du magasin');
+          if (response) handleShopAction('delete', shop);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -56,27 +88,7 @@ class ShopTile extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                final TextEditingController nameController =
-                    TextEditingController(text: shop.name);
-                nameController.text = shop.name;
-                showShopFormDialog(
-                  context: context,
-                  title: 'Editer le magasin',
-                  validationText: 'Modifier',
-                  validationAction: (String name) async {
-                    ShopAPI shopApi = ShopAPI();
-                    ScaffoldMessengerState snackBar =
-                        ScaffoldMessenger.of(context);
-                    Shop editedShop =
-                        await shopApi.updateShop(shop.id, {'name': name});
-                    handleShopAction('update', editedShop);
-                    showSnackBar(
-                        snackBar: snackBar,
-                        message: editedShop.name == name
-                            ? 'Magasin modifié'
-                            : 'Erreur lors de la modification du magasin');
-                  },
-                );
+                _editShop(context);
               },
             ),
             IconButton(
@@ -85,20 +97,7 @@ class ShopTile extends StatelessWidget {
                 color: Colors.red,
               ),
               onPressed: () {
-                showDeleteDialog(
-                    context: context,
-                    handleOnDelete: () async {
-                      ShopAPI shopApi = ShopAPI();
-                      ScaffoldMessengerState snackBar =
-                          ScaffoldMessenger.of(context);
-                      bool response = await shopApi.deleteShop(shop.id);
-                      showSnackBar(
-                          snackBar: snackBar,
-                          message: response
-                              ? 'Magasin supprimé'
-                              : 'Erreur lors de la suppression du magasin');
-                      if (response) handleShopAction('delete', shop);
-                    });
+                _deleteShop(context);
               },
             ),
             IconButton(

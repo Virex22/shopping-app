@@ -20,6 +20,7 @@ class ProductTile extends StatelessWidget {
         context: context,
         title: 'Modifier le produit',
         validationText: 'Modifier',
+        productModel: product,
         validationAction: (String name, double price) async {
           if (name.isEmpty || price <= 0) {
             return;
