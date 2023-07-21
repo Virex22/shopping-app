@@ -193,6 +193,7 @@ class ProductListPageState extends State<ProductListPage> {
                   )
                 : ListView.builder(
                     itemCount: getProductList()!.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final product = getProductList()![index];

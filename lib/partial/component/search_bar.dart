@@ -17,18 +17,9 @@ class SearchBar extends StatefulWidget {
 }
 
 class SearchBarState extends State<SearchBar> {
-  //late FocusNode _focusNode;
-
   @override
   void initState() {
     super.initState();
-    // _focusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    //_focusNode.dispose();
-    super.dispose();
   }
 
   @override
