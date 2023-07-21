@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/api/product_api.dart';
+import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/partial/product/product_tile.dart';
 import 'package:shopping_app/provider/product_provider.dart';
-import 'package:shopping_app/partial/component/search_bar.dart' as AppSearchBar;
+import 'package:shopping_app/partial/component/search_bar.dart'
+    as app_search_bar;
 
 class ProductListPage extends StatefulWidget {
   final int shopId;
@@ -57,22 +59,12 @@ class ProductListPageState extends State<ProductListPage> {
       }
     });
 
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final snackBar = ScaffoldMessenger.of(context);
 
     if (action == 'delete') {
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(
-          content: Text('Produit supprimé'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      showSnackBar(snackBar: snackBar, message: 'Produit supprimé');
     } else if (action == 'update') {
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(
-          content: Text('Produit mis à jour'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      showSnackBar(snackBar: snackBar, message: 'Produit modifié');
     }
   }
 
@@ -156,16 +148,13 @@ class ProductListPageState extends State<ProductListPage> {
               ),
               IconButton(
                 onPressed: () async {
-                  ScaffoldMessengerState messenger =
+                  ScaffoldMessengerState snackBar =
                       ScaffoldMessenger.of(context);
                   await productProvider
                       .updateShopProductsFromApi(widget.shopId);
-                  messenger.showSnackBar(
-                    const SnackBar(
-                      content: Text('Liste des produits mise à jour'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  showSnackBar(
+                      snackBar: snackBar,
+                      message: 'Liste des produits mise à jour');
                 },
                 tooltip: 'Rafraîchir',
                 icon: const Icon(Icons.refresh),
@@ -174,7 +163,7 @@ class ProductListPageState extends State<ProductListPage> {
           ),
         ],
       ),
-      body: AppSearchBar.SearchBar(
+      body: app_search_bar.SearchBar(
         showSearchBar: isSearching,
         onTextChanged: (changedText) {
           setState(() {

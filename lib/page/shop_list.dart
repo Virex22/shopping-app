@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/api/shop_api.dart';
+import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/shop.dart';
 import 'package:shopping_app/partial/shop/shop_tile.dart';
 import 'package:shopping_app/provider/product_provider.dart';
@@ -42,14 +43,11 @@ class ShopListPageState extends State<ShopListPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+              ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
               await productProvider.refreshShopListFromApi();
-              messenger.showSnackBar(
-                const SnackBar(
-                  content: Text('Liste des magasins mise à jour'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              showSnackBar(
+                  snackBar: snackBar,
+                  message: 'Liste des magasins mise à jour');
             },
             tooltip: 'Rafraîchir',
             icon: const Icon(Icons.refresh),

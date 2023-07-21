@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/api/product_api.dart';
+import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/product.dart';
 
 class ProductTile extends StatelessWidget {
@@ -115,7 +116,7 @@ class ProductTile extends StatelessWidget {
                       TextButton(
                         onPressed: () async {
                           final productApi = ProductAPI();
-                          ScaffoldMessengerState scaffoldMessengerState =
+                          ScaffoldMessengerState snackBar =
                               ScaffoldMessenger.of(context);
                           NavigatorState navigatorState = Navigator.of(context);
                           bool response =
@@ -123,13 +124,10 @@ class ProductTile extends StatelessWidget {
                           if (response) {
                             handleProductAction('delete', product);
                           } else {
-                            scaffoldMessengerState.showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Erreur lors de la suppression du produit'),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
+                            showSnackBar(
+                                snackBar: snackBar,
+                                message:
+                                    'Erreur lors de la suppression du produit');
                           }
                           navigatorState.pop();
                         },
