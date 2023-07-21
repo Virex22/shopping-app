@@ -15,15 +15,27 @@ class ProductTile extends StatelessWidget {
   void _editProduct(BuildContext context) {
     final TextEditingController nameController =
         TextEditingController(text: product.name);
+    final TextEditingController priceController =
+        TextEditingController(text: product.price.toString());
     nameController.text = product.name;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Modifier le produit'),
-        content: TextField(
-          decoration: const InputDecoration(labelText: 'Nom du produit'),
-          controller: nameController,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: const InputDecoration(labelText: 'Nom du produit'),
+              controller: nameController,
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Prix du produit'),
+              controller: priceController,
+              keyboardType: TextInputType.number,
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -35,6 +47,7 @@ class ProductTile extends StatelessWidget {
           TextButton(
             onPressed: () async {
               final String name = nameController.text.trim();
+              final double price = double.tryParse(priceController.text) ?? 0.0;
               Navigator.of(context).pop();
 
               if (name.isEmpty) {
@@ -42,8 +55,8 @@ class ProductTile extends StatelessWidget {
               }
 
               final productApi = ProductAPI();
-              Product editedProduct =
-                  await productApi.updateProduct(product.id, {'name': name});
+              Product editedProduct = await productApi
+                  .updateProduct(product.id, {'name': name, 'price': price});
 
               handleProductAction('update', editedProduct);
             },
