@@ -10,6 +10,7 @@ void showProductFormDialog({
           String name, double price, double quantity, String quantityType)
       validationAction,
   String annulationText = 'Annuler',
+  bool onlyPrice = false,
   Product? productModel,
 }) {
   List<String> quantityTypes = ['unit', 'ml', 'L', 'mg', 'g', 'kg'];
@@ -34,32 +35,42 @@ void showProductFormDialog({
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            decoration: const InputDecoration(labelText: 'Nom du produit'),
-            controller: nameController,
+          Visibility(
+            visible: !onlyPrice,
+            child: TextField(
+              decoration: const InputDecoration(labelText: 'Nom du produit'),
+              controller: nameController,
+            ),
           ),
           TextField(
             decoration: const InputDecoration(labelText: 'Prix du produit'),
             controller: priceController,
             keyboardType: TextInputType.number,
           ),
-          TextField(
-            decoration: const InputDecoration(labelText: 'Quantité du produit'),
-            controller: quantityController,
-            keyboardType: TextInputType.number,
+          Visibility(
+            visible: !onlyPrice,
+            child: TextField(
+              decoration:
+                  const InputDecoration(labelText: 'Quantité du produit'),
+              controller: quantityController,
+              keyboardType: TextInputType.number,
+            ),
           ),
-          DropdownButtonFormField<String>(
-            value: selectedQuantityType,
-            decoration: const InputDecoration(labelText: 'Type de quantité'),
-            onChanged: (String? newValue) {
-              selectedQuantityType = newValue ?? 'unit';
-            },
-            items: quantityTypes.map((String type) {
-              return DropdownMenuItem<String>(
-                value: type,
-                child: Text(type),
-              );
-            }).toList(),
+          Visibility(
+            visible: !onlyPrice,
+            child: DropdownButtonFormField<String>(
+              value: selectedQuantityType,
+              decoration: const InputDecoration(labelText: 'Type de quantité'),
+              onChanged: (String? newValue) {
+                selectedQuantityType = newValue ?? 'unit';
+              },
+              items: quantityTypes.map((String type) {
+                return DropdownMenuItem<String>(
+                  value: type,
+                  child: Text(type),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),

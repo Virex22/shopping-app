@@ -15,12 +15,13 @@ class ProductTile extends StatelessWidget {
     required this.handleProductAction,
   }) : super(key: key);
 
-  void _editProduct(BuildContext context) {
+  void _editProduct(BuildContext context, {bool onlyPrice = false}) {
     showProductFormDialog(
         context: context,
         title: 'Modifier le produit',
         validationText: 'Modifier',
         productModel: product,
+        onlyPrice: onlyPrice,
         validationAction: (String name, double price, double quantity,
             String quantityType) async {
           if (name.isEmpty || price <= 0) {
@@ -80,9 +81,24 @@ class ProductTile extends StatelessWidget {
           getTitle(),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        subtitle: Text(
-          '${product.price} €',
-          style: Theme.of(context).textTheme.titleSmall,
+        subtitle: Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: () {
+              _editProduct(context, onlyPrice: true);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${product.price} €',
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+          ),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
