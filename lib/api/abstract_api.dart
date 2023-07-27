@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/logger.dart';
 
 abstract class AbstractAPI {
   late Dio dio;
@@ -50,6 +51,9 @@ abstract class AbstractAPI {
       final response = await dio.put(path, data: data);
       return response;
     } catch (e) {
+      if (e is DioException) {
+        Logger().e(e.response!.data);
+      }
       throw Exception('Erreur lors de la requête PUT : $e');
     }
   }

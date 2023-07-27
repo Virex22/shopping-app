@@ -21,13 +21,21 @@ class ProductTile extends StatelessWidget {
         title: 'Modifier le produit',
         validationText: 'Modifier',
         productModel: product,
-        validationAction: (String name, double price) async {
+        validationAction: (String name, double price, double quantity,
+            String quantityType) async {
           if (name.isEmpty || price <= 0) {
             return;
           }
+          if (quantity <= 0) {
+            quantity = 1;
+          }
           final productApi = ProductAPI();
-          Product editedProduct = await productApi
-              .updateProduct(product.id, {'name': name, 'price': price});
+          Product editedProduct = await productApi.updateProduct(product.id, {
+            'name': name,
+            'price': price,
+            'quantity': quantity.toStringAsFixed(3),
+            'quantityType': quantityType,
+          });
           handleProductAction('update', editedProduct);
         });
   }
@@ -50,13 +58,26 @@ class ProductTile extends StatelessWidget {
         });
   }
 
+  String getTitle() {
+    String title = product.name;
+    if (product.quantity > 0 &&
+        !(product.quantityType == "unit" && product.quantity == 1)) {
+      if (product.quantityType != "unit") {
+        title += ' (${product.quantityText})';
+      } else {
+        title += ' (x${product.quantity.toInt()})';
+      }
+    }
+    return title;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
       child: ListTile(
         title: Text(
-          product.name,
+          getTitle(),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         subtitle: Text(

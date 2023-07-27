@@ -74,15 +74,20 @@ class ProductListPageState extends State<ProductListPage> {
         context: context,
         title: 'Ajouter un produit',
         validationText: 'Ajouter',
-        validationAction: (name, price) async {
+        validationAction: (name, price, quantity, quantityType) async {
           if (name.isEmpty || price <= 0) {
             return;
+          }
+          if (quantity <= 0) {
+            quantity = 1;
           }
 
           final productApi = ProductAPI();
           final newProduct = await productApi.addProduct({
             'name': name,
             'price': price,
+            'quantity': quantity.toStringAsFixed(3),
+            'quantityType': quantityType,
             'shop': '/api/shops/${widget.shopId}',
           });
 
