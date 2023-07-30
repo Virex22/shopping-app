@@ -20,6 +20,7 @@ void showProductFormDialog({
   final TextEditingController priceController =
       TextEditingController(text: productModel?.price.toString());
   final TextEditingController quantityController = TextEditingController();
+
   if (productModel != null) {
     quantityController.text =
         QuantityHelper.getQuantityValue(productModel).toString();
@@ -45,6 +46,7 @@ void showProductFormDialog({
           TextField(
             decoration: const InputDecoration(labelText: 'Prix du produit'),
             controller: priceController,
+            autofocus: onlyPrice,
             keyboardType: TextInputType.number,
           ),
           Visibility(
