@@ -19,6 +19,13 @@ class ShoppingListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateShoppingList(ShoppingList shoppingList) {
+    int index =
+        _shoppingList!.indexWhere((element) => element.id == shoppingList.id);
+    _shoppingList![index] = shoppingList;
+    notifyListeners();
+  }
+
   void refreshSoppingListFromApi() {
     ShoppingListAPI api = ShoppingListAPI();
     api.getAllShoppingLists().then((value) {
