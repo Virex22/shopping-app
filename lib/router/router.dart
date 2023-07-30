@@ -4,6 +4,7 @@ import 'package:shopping_app/page/error.dart';
 import 'package:shopping_app/page/home.dart';
 import 'package:shopping_app/page/product_list.dart';
 import 'package:shopping_app/page/shop_list.dart';
+import 'package:shopping_app/page/shopping_list.dart';
 
 final router = GoRouter(
     routes: [
@@ -22,6 +23,9 @@ final router = GoRouter(
                             int.parse(routeurState.pathParameters['shopId']!)),
                   ),
                 ]),
+            GoRoute(
+                path: 'shopping_list',
+                builder: (context, routeurState) => const ShoppingListPage()),
           ]),
     ],
     errorBuilder: (context, state) => const ErrorPage(),

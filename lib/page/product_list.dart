@@ -91,9 +91,7 @@ class ProductListPageState extends State<ProductListPage> {
             'shop': '/api/shops/${widget.shopId}',
           });
 
-          setState(() {
-            _productProvider.addProduct(widget.shopId, newProduct);
-          });
+          _productProvider.addProduct(widget.shopId, newProduct);
         });
   }
 
