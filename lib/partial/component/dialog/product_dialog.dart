@@ -13,7 +13,7 @@ void showProductFormDialog({
   bool onlyPrice = false,
   Product? productModel,
 }) {
-  List<String> quantityTypes = ['unit', 'ml', 'L', 'mg', 'g', 'kg'];
+  List<String> quantityTypes = ['unit', 'ml', 'L', 'cl', 'mg', 'g', 'kg'];
   late String selectedQuantityType;
   final TextEditingController nameController =
       TextEditingController(text: productModel?.name);

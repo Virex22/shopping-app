@@ -16,8 +16,10 @@ class QuantityHelper {
     if (product.quantityType == 'unit') {
       return product.quantity.toInt();
     } else if (product.quantityType == 'liquid') {
-      if (product.quantity < 1) {
+      if (product.quantity < 0.1) {
         return (product.quantity * 1000).toInt();
+      } else if (product.quantity < 1) {
+        return (product.quantity * 100).toInt();
       } else {
         return product.quantity.toInt();
       }
@@ -62,8 +64,10 @@ class QuantityHelper {
   static String _getLiquidQuantity(Product product) {
     double liter = product.quantity;
 
-    if (liter < 1) {
+    if (liter < 0.1) {
       return '${(liter * 1000).toInt()}ml';
+    } else if (liter < 1) {
+      return '${removeDecimalZeroFormat(liter * 100)}cl';
     } else {
       return '${removeDecimalZeroFormat(liter)}l';
     }
@@ -73,7 +77,7 @@ class QuantityHelper {
     if (quantityType != null) {
       quantityType = quantityType.toLowerCase();
     }
-    List<String> acceptTypes = ['mg', 'g', 'kg', 'ml', 'l', 'unit'];
+    List<String> acceptTypes = ['mg', 'g', 'kg', 'ml', 'l', 'cl', 'unit'];
     if (quantityType != null && !acceptTypes.contains(quantityType)) {
       throw Exception(
           'Invalid quantity type, must be in $acceptTypes, $quantityType given');
@@ -86,6 +90,8 @@ class QuantityHelper {
       return quantity;
     } else if (quantityType == 'kg') {
       return quantity * 1000;
+    } else if (quantityType == 'cl') {
+      return quantity / 100;
     } else {
       throw Exception('you never should be here');
     }
@@ -95,7 +101,9 @@ class QuantityHelper {
     quantityType = quantityType.toLowerCase();
     if (quantityType == 'unit') {
       return 'unit';
-    } else if (quantityType == 'ml' || quantityType == 'l') {
+    } else if (quantityType == 'ml' ||
+        quantityType == 'l' ||
+        quantityType == 'cl') {
       return 'liquid';
     } else if (quantityType == 'mg' ||
         quantityType == 'g' ||
@@ -110,7 +118,7 @@ class QuantityHelper {
     if (product.quantityType == 'unit') {
       return 'unit';
     } else if (product.quantityType == 'liquid') {
-      return quantity < 1 ? 'ml' : 'l';
+      return quantity < 0.1 ? 'ml' : (quantity < 1 ? 'cl' : 'L');
     } else if (product.quantityType == 'weight') {
       return quantity < 1 ? 'mg' : (quantity < 1000 ? 'g' : 'kg');
     }
