@@ -76,7 +76,9 @@ class ShoppingListTile extends StatelessWidget {
             },
             icon: Icon(Icons.edit, color: Theme.of(context).primaryColor),
           ),
-          const Icon(Icons.keyboard_arrow_right),
+          IconButton(
+              onPressed: () => onTap(shoppingList),
+              icon: const Icon(Icons.keyboard_arrow_right)),
         ],
       ),
     );
