@@ -80,7 +80,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
                     return ShoppingListTile(
                       shoppingList: shoppingListProvider.shoppingList![index],
                       onTap: (shoppingList) {
-                        context.go('/shoppingList/${shoppingList.id}');
+                        context.go('/shopping_list/${shoppingList.id}');
                       },
                     );
                   },

@@ -5,6 +5,7 @@ import 'package:shopping_app/page/home.dart';
 import 'package:shopping_app/page/product_list.dart';
 import 'package:shopping_app/page/shop_list.dart';
 import 'package:shopping_app/page/shopping_list.dart';
+import 'package:shopping_app/page/shopping_list_view.dart';
 
 final router = GoRouter(
     routes: [
@@ -25,7 +26,14 @@ final router = GoRouter(
                 ]),
             GoRoute(
                 path: 'shopping_list',
-                builder: (context, routeurState) => const ShoppingListPage()),
+                builder: (context, routeurState) => const ShoppingListPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, routeurState) => ShoppingListView(
+                        id: int.parse(routeurState.pathParameters['id']!)),
+                  ),
+                ]),
           ]),
     ],
     errorBuilder: (context, state) => const ErrorPage(),
