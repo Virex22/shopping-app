@@ -2,12 +2,16 @@ import 'package:intl/intl.dart';
 import 'package:shopping_app/model/shopping_list_item.dart';
 
 class ShoppingList {
+  static String getIrifromId(int id) {
+    return '/api/shopping_lists/$id';
+  }
+
   int id;
   String name;
   DateTime dateAdd;
   List<ShoppingListItem>? items;
 
-  get iri => '/shopping_apps/$id';
+  get iri => ShoppingList.getIrifromId(id);
   get formattedDateAdd => DateFormat('dd/MM/yyyy').format(dateAdd);
 
   ShoppingList({

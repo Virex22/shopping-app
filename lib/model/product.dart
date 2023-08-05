@@ -9,7 +9,7 @@ class Product {
   String quantityType;
   double quantity;
 
-  get iri => '/products/$id';
+  get iri => '/api/products/$id';
   get quantityText => QuantityHelper.getQuantity(this);
   Shop? shop;
 
@@ -26,7 +26,7 @@ class Product {
     return Product(
         id: json['id'],
         name: json['name'],
-        price: json['price'].toDouble(),
+        price: double.parse(json['price'].toString()),
         quantity: double.parse(json['quantity']),
         quantityType: json['quantityType'] ?? 'unit',
         dateAdd: DateTime.parse(json['dateAdd']));

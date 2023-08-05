@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 void showDeleteDialog(
     {required BuildContext context,
     required Function() handleOnDelete,
+    Function()? handleOnCancel,
     String subtitle = 'Êtes-vous sûr de vouloir supprimer cette élément ?'}) {
   showDialog(
     context: context,
@@ -13,6 +14,7 @@ void showDeleteDialog(
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
+            handleOnCancel?.call();
           },
           child: const Text('Annuler'),
         ),

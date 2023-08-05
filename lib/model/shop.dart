@@ -6,7 +6,7 @@ class Shop {
   String name;
   DateTime dateAdd;
   int productsCount;
-  get iri => '/shops/$id';
+  get iri => '/api/shops/$id';
 
   List<Product>? product;
 
