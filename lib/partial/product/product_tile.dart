@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/api/product_api.dart';
+import 'package:shopping_app/api/shopping_list_item_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
+import 'package:shopping_app/helper/product_helper.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/model/shopping_list.dart';
 import 'package:shopping_app/partial/component/dialog/delete_dialog.dart';
 import 'package:shopping_app/partial/component/dialog/product_dialog.dart';
 
@@ -42,12 +45,12 @@ class ProductTile extends StatelessWidget {
   }
 
   void _deleteProduct(BuildContext context) {
+    ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
     showDeleteDialog(
         context: context,
         subtitle: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
         handleOnDelete: () async {
           final productApi = ProductAPI();
-          ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
           bool response = await productApi.deleteProduct(product.id);
           if (response) {
             handleProductAction('delete', product);
@@ -59,17 +62,24 @@ class ProductTile extends StatelessWidget {
         });
   }
 
-  String getTitle() {
-    String title = product.name;
-    if (product.quantity > 0 &&
-        !(product.quantityType == "unit" && product.quantity == 1)) {
-      if (product.quantityType != "unit") {
-        title += ' (${product.quantityText})';
-      } else {
-        title += ' (x${product.quantity.toInt()})';
-      }
-    }
-    return title;
+  void _addProductToShoppingList(BuildContext context) {
+    ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
+    showProductAddToListDialog(
+      context: context,
+      product: product,
+      handleOnAddToList: (int listId) async {
+        final ShoppingListItemApi shoppingListItemApi = ShoppingListItemApi();
+        shoppingListItemApi.addShoppingListItem({
+          'product': Product.getIrifromId(product.id),
+          'shoppingList': ShoppingList.getIrifromId(listId),
+          'quantity': 1
+        }).then((value) {
+          showSnackBar(
+              snackBar: snackBar,
+              message: 'Produit ajouté à la liste de courses');
+        });
+      },
+    );
   }
 
   @override
@@ -78,7 +88,7 @@ class ProductTile extends StatelessWidget {
       elevation: 2,
       child: ListTile(
         title: Text(
-          getTitle(),
+          ProductHelper.getTitle(product),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         subtitle: Align(
@@ -100,30 +110,50 @@ class ProductTile extends StatelessWidget {
             ),
           ),
         ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.blue,
-              ),
-              onPressed: () {
-                _editProduct(context);
+        trailing: IconButton(
+          icon: const Icon(
+            Icons.more_vert,
+            color: Colors.blue,
+          ),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      leading: const Icon(Icons.add_shopping_cart),
+                      title: const Text('Ajouter dans une liste de courses'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _addProductToShoppingList(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.edit),
+                      title: const Text('Modifier'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _editProduct(context);
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.delete),
+                      title: const Text('Supprimer'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _deleteProduct(context);
+                      },
+                      textColor: Colors.red,
+                      iconColor: Colors.red,
+                    ),
+                  ],
+                );
               },
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
-              onPressed: () {
-                _deleteProduct(context);
-              },
-            ),
-          ],
+            );
+          },
         ),
-        onTap: () {},
       ),
     );
   }

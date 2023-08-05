@@ -2,11 +2,15 @@ import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/model/product.dart';
 
 class Shop {
+  static String getIrifromId(int id) {
+    return '/api/shops/$id';
+  }
+
   int id;
   String name;
   DateTime dateAdd;
   int productsCount;
-  get iri => '/api/shops/$id';
+  get iri => Shop.getIrifromId(id);
 
   List<Product>? product;
 

@@ -42,12 +42,12 @@ abstract class AbstractAPI {
       final response = await dio.post(path, data: data);
       return response;
     } catch (e) {
-      if (e is DioException) {
+      if (e is DioException && e.response != null) {
         Logger().e(e.response!.data);
         throw Exception(
-            'Erreur lors de la requête POST reponse de dio : ${e as DioException}');
+            'Erreur lors de la requête POST reponse de dio : ${e.response!.data}');
       }
-      throw Exception('Erreur lors de la requête POST reponse de dio : $e');
+      throw Exception('Erreur lors de la requête POST : $e');
     }
   }
 
@@ -68,7 +68,10 @@ abstract class AbstractAPI {
       final response = await dio.delete(path);
       return response;
     } catch (e) {
-      throw Exception('Erreur lors de la requête DELETE : $e');
+      if (e is DioException) {
+        Logger().e(e.response!.data);
+      }
+      throw Exception('Erreur lors de la requête PUT : $e');
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/api/shopping_list_item_api.dart';
-import 'package:shopping_app/model/shopping_list.dart';
 import 'package:shopping_app/model/shopping_list_item.dart';
 import 'package:shopping_app/partial/component/dialog/delete_dialog.dart';
 import 'package:shopping_app/provider/shopping_list_provider.dart';
@@ -82,6 +81,7 @@ class _ShoppingListItemTileState extends State<ShoppingListItemTile> {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
+          borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),

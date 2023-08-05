@@ -1,3 +1,4 @@
+import 'package:shopping_app/helper/product_helper.dart';
 import 'package:shopping_app/model/product.dart';
 
 class ShoppingListItem {
@@ -27,7 +28,7 @@ class ShoppingListItem {
     if (product == null && customName != null) {
       return customName;
     } else if (product != null) {
-      return product!.name;
+      return ProductHelper.getTitle(product!);
     } else {
       return '';
     }

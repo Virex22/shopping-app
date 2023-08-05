@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app/helper/quantity_helper.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/model/shopping_list.dart';
+import 'package:shopping_app/provider/shopping_list_provider.dart';
 
 void showProductFormDialog({
   required BuildContext context,
@@ -97,6 +100,72 @@ void showProductFormDialog({
                 QuantityHelper.getQuantityType(selectedQuantityType));
           },
           child: Text(validationText),
+        ),
+      ],
+    ),
+  );
+}
+
+void showProductAddToListDialog({
+  required BuildContext context,
+  required Product product,
+  required Function(int listId) handleOnAddToList,
+}) async {
+  ShoppingListProvider shoppingListProvider =
+      Provider.of<ShoppingListProvider>(context, listen: false);
+  List<ShoppingList>? shoppingLists = shoppingListProvider.shoppingList;
+  if (shoppingLists == null || shoppingLists.isEmpty) {
+    shoppingListProvider.fetchAllShoppingListFromApi().then((value) {
+      _showProductAddDialogPart(
+        context: context,
+        product: product,
+        handleOnAddToList: handleOnAddToList,
+        shoppingLists: value,
+      );
+    });
+  } else {
+    _showProductAddDialogPart(
+      context: context,
+      product: product,
+      handleOnAddToList: handleOnAddToList,
+      shoppingLists: shoppingLists,
+    );
+  }
+}
+
+void _showProductAddDialogPart({
+  required BuildContext context,
+  required Product product,
+  required Function(int listId) handleOnAddToList,
+  required List<ShoppingList> shoppingLists,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Ajouter à une liste'),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+          itemCount: shoppingLists.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(shoppingLists[index].name),
+              onTap: () {
+                Navigator.of(context).pop();
+                handleOnAddToList(shoppingLists[index].id);
+              },
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Annuler'),
         ),
       ],
     ),

@@ -37,6 +37,16 @@ class ShoppingListProvider extends ChangeNotifier {
     });
   }
 
+  Future<List<ShoppingList>> fetchAllShoppingListFromApi() async {
+    ShoppingListAPI api = ShoppingListAPI();
+    List<ShoppingList> shoppingLists = await api.getAllShoppingLists();
+    _shoppingList ??= [];
+    _shoppingList!.clear();
+    _shoppingList!.addAll(shoppingLists);
+    notifyListeners();
+    return shoppingLists;
+  }
+
   void deleteShoppingListItem(
       ShoppingListItem shoppingListItem, int shoppingListId) {
     ShoppingList shoppingList =

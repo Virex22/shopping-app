@@ -2,6 +2,10 @@ import 'package:shopping_app/helper/quantity_helper.dart';
 import 'package:shopping_app/model/shop.dart';
 
 class Product {
+  static String getIrifromId(int id) {
+    return '/api/products/$id';
+  }
+
   int id;
   String name;
   double price;
@@ -9,7 +13,7 @@ class Product {
   String quantityType;
   double quantity;
 
-  get iri => '/api/products/$id';
+  get iri => Product.getIrifromId(id);
   get quantityText => QuantityHelper.getQuantity(this);
   Shop? shop;
 

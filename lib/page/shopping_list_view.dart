@@ -5,7 +5,6 @@ import 'package:shopping_app/api/shopping_list_api.dart';
 import 'package:shopping_app/api/shopping_list_item_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/shopping_list.dart';
-import 'package:shopping_app/model/shopping_list_item.dart';
 import 'package:shopping_app/partial/component/dialog/delete_dialog.dart';
 import 'package:shopping_app/partial/component/dialog/shopping_list_dialog.dart';
 import 'package:shopping_app/partial/shopping_list/shopping_list_item_tile.dart';
@@ -56,14 +55,14 @@ class ShoppingListViewState extends State<ShoppingListView> {
 
   ShoppingList? getShoppingList(ShoppingListProvider? provider) {
     ShoppingListProvider usedProvider = provider ?? _shoppingListProvider;
-    if (_shoppingListProvider.shoppingList == null) {
+    if (usedProvider.shoppingList == null) {
       return null;
-    } else if (_shoppingListProvider.shoppingList!
+    } else if (usedProvider.shoppingList!
         .where((element) => element.id == widget.id)
         .isEmpty) {
       return null;
     } else {
-      return _shoppingListProvider.shoppingList!
+      return usedProvider.shoppingList!
           .firstWhere((element) => element.id == widget.id);
     }
   }
@@ -139,7 +138,8 @@ class ShoppingListViewState extends State<ShoppingListView> {
         context.watch<ShoppingListProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shopping List'),
+        title: Text(
+            shoppingList == null ? 'Liste de courses' : shoppingList!.name),
         actions: [
           IconButton(
             onPressed: _refreshList,
