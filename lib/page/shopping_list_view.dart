@@ -205,7 +205,7 @@ class ShoppingListViewState extends State<ShoppingListView> {
                         ),
                       ),
                       TextSpan(
-                        text: '$total €',
+                        text: '${total.toStringAsFixed(2)}€',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -219,7 +219,7 @@ class ShoppingListViewState extends State<ShoppingListView> {
                   text: TextSpan(
                     children: [
                       const TextSpan(
-                        text: 'Total unselected : ',
+                        text: 'Total non sélectionné : ',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
