@@ -1,9 +1,15 @@
 class Step {
+  static String getIrifromId(int id) {
+    return '/api/steps/$id';
+  }
+
   int id;
   String title;
   String instruction;
   String recipeURI;
   int position;
+
+  get iri => Step.getIrifromId(id);
 
   Step({
     required this.id,
