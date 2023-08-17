@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shopping_app/page/error.dart';
 import 'package:shopping_app/page/home.dart';
 import 'package:shopping_app/page/product_list.dart';
+import 'package:shopping_app/page/recipe_list.dart';
 import 'package:shopping_app/page/shop_list.dart';
 import 'package:shopping_app/page/shopping_list.dart';
 import 'package:shopping_app/page/shopping_list_view.dart';
@@ -34,6 +35,10 @@ final router = GoRouter(
                         id: int.parse(routeurState.pathParameters['id']!)),
                   ),
                 ]),
+            GoRoute(
+              path: 'recipes',
+              builder: (context, routeurState) => const RecipeListPage(),
+            ),
           ]),
     ],
     errorBuilder: (context, state) => const ErrorPage(),

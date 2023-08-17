@@ -52,6 +52,26 @@ class HomePage extends StatelessWidget {
               },
             ),
           ),
+          Card(
+            elevation: 2,
+            child: ListTile(
+              title: Text('Recettes',
+                  style: Theme.of(context).textTheme.titleLarge),
+              subtitle: const Text('Accéder aux recettes'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.restaurant_menu,
+                      size: 30, color: Theme.of(context).primaryColor),
+                  Container(width: 10),
+                  const Icon(Icons.arrow_forward_ios),
+                ],
+              ),
+              onTap: () {
+                context.go('/recipes');
+              },
+            ),
+          ),
         ],
       ),
     );
