@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/model/ingredient.dart';
+import 'package:shopping_app/model/recipe.dart';
+import 'package:shopping_app/model/step.dart' as step_model;
 
 void showAddIngredientDialog({
   required BuildContext context,
@@ -201,6 +203,116 @@ void showAddProductIngredientDialog({
               customPrice: double.parse(priceController.text),
             );
             handleOnAddIngredient(ingredient);
+            Navigator.of(context).pop();
+          },
+          child: const Text('Ajouter'),
+        ),
+      ],
+    ),
+  );
+}
+
+void showAddRecipeDialog({
+  required BuildContext context,
+  required Function(String title, String servings) handleOnAddRecipe,
+}) {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController servingsController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Ajouter une recette'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: titleController,
+            decoration: const InputDecoration(
+              labelText: 'Titre de la recette',
+            ),
+          ),
+          TextField(
+            controller: servingsController,
+            decoration: const InputDecoration(
+              labelText: 'Nombre de personnes',
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Annuler'),
+        ),
+        TextButton(
+          onPressed: () {
+            final title = titleController.text;
+            final servings = servingsController.text;
+            handleOnAddRecipe(title, servings);
+            Navigator.of(context).pop();
+          },
+          child: const Text('Ajouter'),
+        ),
+      ],
+    ),
+  );
+}
+
+void showAddStepDialog({
+  required BuildContext context,
+  required Function(step_model.Step step) handleOnAddStep,
+  required int position,
+  int recipeId = -1,
+}) {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController instructionController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Ajouter une étape'),
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                labelText: 'Titre de l\'étape',
+              ),
+            ),
+            TextField(
+              controller: instructionController,
+              decoration: const InputDecoration(
+                labelText: 'Instruction de l\'étape',
+              ),
+              maxLines: null,
+              minLines: 3,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Annuler'),
+        ),
+        TextButton(
+          onPressed: () {
+            final title = titleController.text;
+            final instruction = instructionController.text;
+            final step = step_model.Step(
+              id: -1,
+              title: title,
+              instruction: instruction,
+              position: position,
+              recipeURI: Recipe.getIrifromId(recipeId),
+            );
+            handleOnAddStep(step);
             Navigator.of(context).pop();
           },
           child: const Text('Ajouter'),

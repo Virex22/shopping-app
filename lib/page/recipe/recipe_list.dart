@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_app/api/recipe_api.dart';
 import 'package:shopping_app/provider/recipe_provider.dart';
 
 class RecipeListPage extends StatefulWidget {

@@ -83,17 +83,21 @@ class _RecipeFormState extends State<RecipeForm> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  showAddIngredientDialog(
-                      context: context,
-                      handleOnAddIngredient: (ingredient) {
-                        setState(() {
-                          ingredients.add(ingredient);
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showAddIngredientDialog(
+                        context: context,
+                        handleOnAddIngredient: (ingredient) {
+                          setState(() {
+                            ingredients.add(ingredient);
+                          });
                         });
-                      });
-                },
-                child: const Text('Ajouter un ingrédient'),
+                  },
+                  child: const Text('Ajouter un ingrédient'),
+                ),
               ),
             ],
           ),
@@ -135,18 +139,34 @@ class _RecipeFormState extends State<RecipeForm> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Action d'ajout d'étape
-                },
-                child: const Text('Ajouter une étape'),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showAddStepDialog(
+                      context: context,
+                      handleOnAddStep: (step) {
+                        setState(() {
+                          steps.add(step);
+                        });
+                      },
+                      position: steps.length + 1,
+                    );
+                  },
+                  child: const Text('Ajouter une étape'),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text('Sauvegarder'),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: 40,
+            child: ElevatedButton(
+              onPressed: () {},
+              child: const Text('Sauvegarder'),
+            ),
           ),
         ],
       ),
