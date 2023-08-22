@@ -7,7 +7,7 @@ class Ingredient {
 
   int id;
   Product? product;
-  String quantity;
+  double quantity;
   String? customName;
   double? customPrice;
   String quantityType;
@@ -16,10 +16,10 @@ class Ingredient {
 
   Ingredient({
     required this.id,
-    required this.product,
+    this.product,
     required this.quantity,
-    required this.customName,
-    required this.customPrice,
+    this.customName,
+    this.customPrice,
     required this.quantityType,
   });
 
@@ -48,7 +48,7 @@ class Ingredient {
       id: json['id'],
       product:
           json['product'] == null ? null : Product.fromJson(json['product']),
-      quantity: json['quantity'],
+      quantity: double.parse(json['quantity']),
       customName: json['customName'],
       customPrice: json['customPrice'] == null
           ? null

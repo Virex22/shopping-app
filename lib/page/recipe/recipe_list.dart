@@ -62,7 +62,7 @@ class RecipeListPageState extends State<RecipeListPage> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/recipe/add');
+          context.go('/recipes/add');
         },
         child: const Icon(Icons.add),
       ),
