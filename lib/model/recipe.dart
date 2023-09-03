@@ -26,7 +26,10 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) {
     List<Step> steps = [];
     if (json['steps'] != null) {
-      steps = json['steps'].map((stepJson) => Step.fromJson(stepJson));
+      steps = json['steps']
+          .map<Step>((step) => Step.fromJson(step))
+          .toList()
+          .cast<Step>();
     }
     return Recipe(
       id: json['id'],

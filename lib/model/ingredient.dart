@@ -10,7 +10,8 @@ class Ingredient {
   double quantity;
   String? customName;
   double? customPrice;
-  String quantityType;
+  String? customQuantityType;
+  String? recipeURI;
 
   get iri => Ingredient.getIrifromId(id);
 
@@ -18,9 +19,10 @@ class Ingredient {
     required this.id,
     this.product,
     required this.quantity,
+    required this.recipeURI,
     this.customName,
     this.customPrice,
-    required this.quantityType,
+    this.customQuantityType,
   });
 
   get name {
@@ -44,16 +46,17 @@ class Ingredient {
   }
 
   factory Ingredient.fromJson(Map<String, dynamic> json) {
+    double? customPrice =
+        json['customPrice'] == null ? null : double.parse(json['customPrice']);
     return Ingredient(
       id: json['id'],
       product:
           json['product'] == null ? null : Product.fromJson(json['product']),
       quantity: double.parse(json['quantity']),
+      recipeURI: json['recipe'],
       customName: json['customName'],
-      customPrice: json['customPrice'] == null
-          ? null
-          : double.parse(json['customPrice']),
-      quantityType: json['quantityType'],
+      customPrice: customPrice,
+      customQuantityType: json['customQuantityType'],
     );
   }
 }

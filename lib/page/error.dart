@@ -9,6 +9,14 @@ class ErrorPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Erreur'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.go('/');
+            },
+            icon: const Icon(Icons.home),
+          ),
+        ],
       ),
       body: Center(
         child: Column(

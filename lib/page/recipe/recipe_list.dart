@@ -25,6 +25,13 @@ class RecipeListPageState extends State<RecipeListPage> {
     RecipeProvider recipeProvider = context.watch<RecipeProvider>();
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              recipeProvider.refreshRecipeListFromApi();
+            },
+            icon: const Icon(Icons.refresh),
+          ),],
         title: const Text('Recettes'),
       ),
       body: recipeProvider.recipes == null

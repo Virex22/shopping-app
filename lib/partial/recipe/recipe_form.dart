@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_app/handler/recipe/recipe_handler.dart';
 import 'package:shopping_app/model/ingredient.dart';
 import 'package:shopping_app/model/recipe.dart';
 import 'package:shopping_app/model/step.dart' as step_model;
 import 'package:shopping_app/partial/component/dialog/recipe_dialog.dart';
+import 'package:shopping_app/provider/recipe_provider.dart';
 
 class RecipeForm extends StatefulWidget {
   final Recipe? model;
@@ -15,6 +18,7 @@ class RecipeForm extends StatefulWidget {
 class _RecipeFormState extends State<RecipeForm> {
   final titleController = TextEditingController();
   final servingsController = TextEditingController();
+  final timeController = TextEditingController();
   final List<Ingredient> ingredients = [];
   final List<step_model.Step> steps = [];
 
@@ -29,6 +33,7 @@ class _RecipeFormState extends State<RecipeForm> {
 
   @override
   Widget build(BuildContext context) {
+    RecipeProvider recipeProvider = context.read<RecipeProvider>();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -43,6 +48,12 @@ class _RecipeFormState extends State<RecipeForm> {
             controller: servingsController,
             decoration: const InputDecoration(
               labelText: 'Nombre de personnes',
+            ),
+          ),
+          TextField(
+            controller: timeController,
+            decoration: const InputDecoration(
+              labelText: 'Temps de préparation (en minutes)',
             ),
           ),
           const SizedBox(height: 20),
@@ -164,7 +175,38 @@ class _RecipeFormState extends State<RecipeForm> {
             width: MediaQuery.of(context).size.width * 0.7,
             height: 40,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  RecipeHandler.validateRecipe(
+                    title: titleController.text,
+                    servingsCount: servingsController.text,
+                    ingredients: ingredients,
+                    steps: steps,
+                    time: timeController.text,
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                    ),
+                  );
+                  return;
+                }
+                if (widget.model == null) {
+                  NavigatorState navigator = Navigator.of(context);
+                  Recipe recipe = await RecipeHandler.addRecipe(
+                    title: titleController.text,
+                    servingsCount: int.parse(servingsController.text),
+                    ingredients: ingredients,
+                    steps: steps,
+                    time: timeController.text,
+                  );
+                  recipeProvider.addRecipe(recipe);
+                  navigator.pop();
+                } else {
+                  // TODO: update recipe
+                }
+              },
               child: const Text('Sauvegarder'),
             ),
           ),
