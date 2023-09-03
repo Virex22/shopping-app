@@ -65,6 +65,7 @@ class RecipeListPageState extends State<RecipeListPage> {
                                                 const Icon(Icons.edit_outlined),
                                             title: const Text('Modifier'),
                                             onTap: () {
+                                              Navigator.pop(context);
                                               context.go(
                                                   '/recipes/edit/${recipeProvider.recipes![index].id}');
                                             },
@@ -76,10 +77,10 @@ class RecipeListPageState extends State<RecipeListPage> {
                                             textColor: Colors.red,
                                             iconColor: Colors.red,
                                             onTap: () {
+                                              Navigator.pop(context);
                                               recipeProvider.deleteRecipe(
                                                   recipeProvider
                                                       .recipes![index].id);
-                                              Navigator.pop(context);
                                             },
                                           ),
                                         ],

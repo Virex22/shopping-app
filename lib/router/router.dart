@@ -4,6 +4,7 @@ import 'package:shopping_app/page/error.dart';
 import 'package:shopping_app/page/home.dart';
 import 'package:shopping_app/page/product_list.dart';
 import 'package:shopping_app/page/recipe/recipe_add.dart';
+import 'package:shopping_app/page/recipe/recipe_edit.dart';
 import 'package:shopping_app/page/recipe/recipe_list.dart';
 import 'package:shopping_app/page/shop_list.dart';
 import 'package:shopping_app/page/shopping_list.dart';
@@ -44,6 +45,12 @@ final router = GoRouter(
                   path: 'add',
                   builder: (context, routeurState) => const RecipeAddPage(),
                 ),
+                GoRoute(
+                    path: 'edit/:id',
+                    builder: (context, routeurState) {
+                      final id = int.parse(routeurState.pathParameters['id']!);
+                      return RecipeEditPage(id: id);
+                    }),
               ],
             ),
           ]),

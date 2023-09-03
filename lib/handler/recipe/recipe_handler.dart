@@ -14,9 +14,9 @@ class RecipeHandler {
     required List<step_model.Step> steps,
     required String time,
   }) async {
-    int minutes = 20;
-  DateTime epochTime = DateTime.fromMillisecondsSinceEpoch(0); // 1er janvier 1970
-  DateTime formatedTime = epochTime.add(Duration(minutes: minutes));
+    int minutes = int.parse(time);
+    DateTime epochTime = DateTime.fromMillisecondsSinceEpoch(0);
+    DateTime formatedTime = epochTime.add(Duration(minutes: minutes));
     RecipeApi recipeApi = RecipeApi();
     Recipe recipe = await recipeApi.addRecipe({
       'title': title,
@@ -37,7 +37,6 @@ class RecipeHandler {
         ingredientAPI.addIngredient({
           'product': Product.getIrifromId(ingredient.product!.id),
           'quantity': ingredient.quantity.toString(),
-          'customQuantityType': ingredient.customQuantityType,
           'recipe': Recipe.getIrifromId(recipe.id),
         });
       }
@@ -51,6 +50,84 @@ class RecipeHandler {
         'recipe': Recipe.getIrifromId(recipe.id),
       });
     }
+    recipe.ingredients = ingredients;
+    recipe.steps = steps;
+    return recipe;
+  }
+
+  static Future<Recipe> updateRecipe({
+    required String title,
+    required int servingsCount,
+    required List<Ingredient> ingredients,
+    required List<step_model.Step> steps,
+    required String time,
+    required int recipeId,
+  }) async {
+    int minutes = int.parse(time);
+    DateTime epochTime = DateTime.fromMillisecondsSinceEpoch(0);
+    DateTime formatedTime = epochTime.add(Duration(minutes: minutes));
+    RecipeApi recipeApi = RecipeApi();
+    Recipe recipe = await recipeApi.updateRecipe(recipeId, {
+      'title': title,
+      'servings': servingsCount,
+      'time': formatedTime.toIso8601String(),
+    });
+    for (Ingredient ingredient in ingredients) {
+      IngredientAPI ingredientAPI = IngredientAPI();
+      if (ingredient.customName != null) {
+        if (ingredient.id > 0) {
+          ingredientAPI.updateIngredient(ingredient.id, {
+            'customName': ingredient.customName!,
+            'customPrice': ingredient.customPrice!.toString(),
+            'quantity': ingredient.quantity.toString(),
+            'customQuantityType': ingredient.customQuantityType,
+            'recipe': Recipe.getIrifromId(recipe.id),
+          });
+        } else {
+          ingredientAPI.addIngredient({
+            'customName': ingredient.customName!,
+            'customPrice': ingredient.customPrice!.toString(),
+            'quantity': ingredient.quantity.toString(),
+            'customQuantityType': ingredient.customQuantityType,
+            'recipe': Recipe.getIrifromId(recipe.id),
+          });
+        }
+      } else {
+        if (ingredient.id > 0) {
+          ingredientAPI.updateIngredient(ingredient.id, {
+            'product': Product.getIrifromId(ingredient.product!.id),
+            'quantity': ingredient.quantity.toString(),
+            'recipe': Recipe.getIrifromId(recipe.id),
+          });
+        } else {
+          ingredientAPI.addIngredient({
+            'product': Product.getIrifromId(ingredient.product!.id),
+            'quantity': ingredient.quantity.toString(),
+            'recipe': Recipe.getIrifromId(recipe.id),
+          });
+        }
+      }
+    }
+    for (step_model.Step step in steps) {
+      StepAPI stepAPI = StepAPI();
+      if (step.id > 0) {
+        stepAPI.updateStep(step.id, {
+          'instruction': step.instruction,
+          'title': step.title,
+          'position': step.position,
+          'recipe': Recipe.getIrifromId(recipe.id),
+        });
+      } else {
+        stepAPI.addStep({
+          'instruction': step.instruction,
+          'title': step.title,
+          'position': step.position,
+          'recipe': Recipe.getIrifromId(recipe.id),
+        });
+      }
+    }
+    recipe.ingredients = ingredients;
+    recipe.steps = steps;
     return recipe;
   }
 

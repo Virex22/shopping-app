@@ -28,6 +28,12 @@ class _RecipeFormState extends State<RecipeForm> {
     if (widget.model != null) {
       titleController.text = widget.model!.title;
       servingsController.text = widget.model!.servings.toString();
+      timeController.text = widget.model!.time
+          .difference(DateTime.fromMillisecondsSinceEpoch(0))
+          .inMinutes
+          .toString();
+      ingredients.addAll(widget.model!.ingredients);
+      steps.addAll(widget.model!.steps);
     }
   }
 
@@ -204,7 +210,17 @@ class _RecipeFormState extends State<RecipeForm> {
                   recipeProvider.addRecipe(recipe);
                   navigator.pop();
                 } else {
-                  // TODO: update recipe
+                  NavigatorState navigator = Navigator.of(context);
+                  Recipe recipe = await RecipeHandler.updateRecipe(
+                    title: titleController.text,
+                    servingsCount: int.parse(servingsController.text),
+                    ingredients: ingredients,
+                    steps: steps,
+                    time: timeController.text,
+                    recipeId: widget.model!.id,
+                  );
+                  recipeProvider.updateRecipe(recipe);
+                  navigator.pop();
                 }
               },
               child: const Text('Sauvegarder'),
