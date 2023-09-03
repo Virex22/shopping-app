@@ -121,7 +121,7 @@ class ProductTile extends StatelessWidget {
               builder: (BuildContext context) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
+                  children: [
                     ListTile(
                       leading: const Icon(Icons.add_shopping_cart),
                       title: const Text('Ajouter dans une liste de courses'),

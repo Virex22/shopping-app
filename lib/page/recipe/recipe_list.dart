@@ -31,7 +31,8 @@ class RecipeListPageState extends State<RecipeListPage> {
               recipeProvider.refreshRecipeListFromApi();
             },
             icon: const Icon(Icons.refresh),
-          ),],
+          ),
+        ],
         title: const Text('Recettes'),
       ),
       body: recipeProvider.recipes == null
@@ -51,11 +52,43 @@ class RecipeListPageState extends State<RecipeListPage> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.restaurant,
-                                size: 30,
-                                color: Theme.of(context).primaryColor),
-                            Container(width: 10),
-                            const Icon(Icons.arrow_forward_ios),
+                            IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ListTile(
+                                            leading:
+                                                const Icon(Icons.edit_outlined),
+                                            title: const Text('Modifier'),
+                                            onTap: () {
+                                              context.go(
+                                                  '/recipes/edit/${recipeProvider.recipes![index].id}');
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: const Icon(
+                                                Icons.delete_outline),
+                                            title: const Text('Supprimer'),
+                                            textColor: Colors.red,
+                                            iconColor: Colors.red,
+                                            onTap: () {
+                                              recipeProvider.deleteRecipe(
+                                                  recipeProvider
+                                                      .recipes![index].id);
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.more_vert),
+                                tooltip: 'Voir la recette'),
                           ],
                         ),
                         onTap: () {

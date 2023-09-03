@@ -32,4 +32,10 @@ class RecipeProvider with ChangeNotifier {
     _recipes!.addAll(recipes);
     notifyListeners();
   }
+
+  deleteRecipe(int recipeId) async {
+    RecipeApi api = RecipeApi();
+    await api.deleteRecipe(recipeId);
+    removeRecipe(recipeId);
+  }
 }
