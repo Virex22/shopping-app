@@ -38,7 +38,7 @@ class _RecipeFormState extends State<RecipeForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext globalContext) {
     RecipeProvider recipeProvider = context.read<RecipeProvider>();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -91,6 +91,35 @@ class _RecipeFormState extends State<RecipeForm> {
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     title: Text(ingredients[index].name),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.more_vert),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            context: globalContext,
+                                            builder: (context) {
+                                              return Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  ListTile(
+                                                    leading: const Icon(
+                                                        Icons.delete_outline),
+                                                    title:
+                                                        const Text('Supprimer'),
+                                                    textColor: Colors.red,
+                                                    iconColor: Colors.red,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        ingredients
+                                                            .removeAt(index);
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                    ),
                                   );
                                 },
                               ),
@@ -147,6 +176,54 @@ class _RecipeFormState extends State<RecipeForm> {
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     title: Text(steps[index].title),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.more_vert),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            context: globalContext,
+                                            builder: (context) {
+                                              return Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  ListTile(
+                                                    leading: const Icon(
+                                                        Icons.edit_outlined),
+                                                    title:
+                                                        const Text('Modifier'),
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      showAddStepDialog(
+                                                        context: context,
+                                                        handleOnAddStep:
+                                                            (step) {
+                                                          setState(() {
+                                                            steps[index] = step;
+                                                          });
+                                                        },
+                                                        position: index + 1,
+                                                        model: steps[index],
+                                                      );
+                                                    },
+                                                  ),
+                                                  ListTile(
+                                                    leading: const Icon(
+                                                        Icons.delete_outline),
+                                                    title:
+                                                        const Text('Supprimer'),
+                                                    textColor: Colors.red,
+                                                    iconColor: Colors.red,
+                                                    onTap: () {
+                                                      setState(() {
+                                                        steps.removeAt(index);
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                    ),
                                   );
                                 },
                               ),
@@ -217,7 +294,7 @@ class _RecipeFormState extends State<RecipeForm> {
                     ingredients: ingredients,
                     steps: steps,
                     time: timeController.text,
-                    recipeId: widget.model!.id,
+                    initRecipe: widget.model!,
                   );
                   recipeProvider.updateRecipe(recipe);
                   navigator.pop();

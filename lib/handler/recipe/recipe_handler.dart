@@ -55,23 +55,24 @@ class RecipeHandler {
     return recipe;
   }
 
-  static Future<Recipe> updateRecipe({
-    required String title,
-    required int servingsCount,
-    required List<Ingredient> ingredients,
-    required List<step_model.Step> steps,
-    required String time,
-    required int recipeId,
-  }) async {
+  static Future<Recipe> updateRecipe(
+      {required String title,
+      required int servingsCount,
+      required List<Ingredient> ingredients,
+      required List<step_model.Step> steps,
+      required String time,
+      required Recipe initRecipe}) async {
     int minutes = int.parse(time);
     DateTime epochTime = DateTime.fromMillisecondsSinceEpoch(0);
     DateTime formatedTime = epochTime.add(Duration(minutes: minutes));
     RecipeApi recipeApi = RecipeApi();
-    Recipe recipe = await recipeApi.updateRecipe(recipeId, {
+    Recipe recipe = await recipeApi.updateRecipe(initRecipe.id, {
       'title': title,
       'servings': servingsCount,
       'time': formatedTime.toIso8601String(),
     });
+    deleteIngredientIfIsDeleted(initRecipe.ingredients, ingredients);
+    deleteStepIfIsDeleted(initRecipe.steps, steps);
     for (Ingredient ingredient in ingredients) {
       IngredientAPI ingredientAPI = IngredientAPI();
       if (ingredient.customName != null) {
@@ -164,6 +165,26 @@ class RecipeHandler {
     }
     if (int.tryParse(time)! <= 0) {
       throw Exception('Le temps de préparation doit être supérieur à 0.');
+    }
+  }
+
+  static void deleteIngredientIfIsDeleted(
+      List<Ingredient> initIngredients, List<Ingredient> ingredients) {
+    for (Ingredient initIngredient in initIngredients) {
+      if (!ingredients.any((element) => element.id == initIngredient.id)) {
+        IngredientAPI ingredientAPI = IngredientAPI();
+        ingredientAPI.deleteIngredient(initIngredient.id);
+      }
+    }
+  }
+
+  static void deleteStepIfIsDeleted(
+      List<step_model.Step> initSteps, List<step_model.Step> steps) {
+    for (step_model.Step initStep in initSteps) {
+      if (!steps.any((element) => element.id == initStep.id)) {
+        StepAPI stepAPI = StepAPI();
+        stepAPI.deleteStep(initStep.id);
+      }
     }
   }
 }

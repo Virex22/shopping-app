@@ -257,14 +257,18 @@ void showAddRecipeDialog({
   );
 }
 
-void showAddStepDialog({
-  required BuildContext context,
-  required Function(step_model.Step step) handleOnAddStep,
-  required int position,
-  int recipeId = -1,
-}) {
+void showAddStepDialog(
+    {required BuildContext context,
+    required Function(step_model.Step step) handleOnAddStep,
+    required int position,
+    int recipeId = -1,
+    step_model.Step? model}) {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController instructionController = TextEditingController();
+  if (model != null) {
+    titleController.text = model.title;
+    instructionController.text = model.instruction;
+  }
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
