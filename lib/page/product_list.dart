@@ -156,6 +156,7 @@ class ProductListPageState extends State<ProductListPage> {
                       return ProductTile(
                         product: product,
                         handleProductAction: _handleAction,
+                        shopId: widget.shopId,
                       );
                     },
                   ),

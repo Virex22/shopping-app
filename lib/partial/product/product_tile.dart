@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shopping_app/api/product_api.dart';
 import 'package:shopping_app/api/shopping_list_item_api.dart';
 import 'package:shopping_app/helper/global_helper.dart';
@@ -10,12 +11,14 @@ import 'package:shopping_app/partial/component/dialog/product_dialog.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
+  final int shopId;
   final Function(String, Product) handleProductAction;
 
   const ProductTile({
     Key? key,
     required this.product,
     required this.handleProductAction,
+    required this.shopId,
   }) : super(key: key);
 
   void _editProduct(BuildContext context, {bool onlyPrice = false}) {
@@ -179,6 +182,9 @@ class ProductTile extends StatelessWidget {
             );
           },
         ),
+        onTap: () {
+          context.go('/shops/$shopId/products/${product.id}');
+        },
       ),
     );
   }

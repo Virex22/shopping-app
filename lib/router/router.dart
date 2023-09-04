@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shopping_app/page/error.dart';
 import 'package:shopping_app/page/home.dart';
 import 'package:shopping_app/page/product_list.dart';
+import 'package:shopping_app/page/product_view.dart';
 import 'package:shopping_app/page/recipe/recipe_add.dart';
 import 'package:shopping_app/page/recipe/recipe_edit.dart';
 import 'package:shopping_app/page/recipe/recipe_list.dart';
@@ -26,6 +27,16 @@ final router = GoRouter(
                     builder: (context, routeurState) => ProductListPage(
                         shopId:
                             int.parse(routeurState.pathParameters['shopId']!)),
+                    routes: [
+                      GoRoute(
+                        path: ':productId',
+                        builder: (context, routeurState) => ProductViewPage(
+                            shopId: int.parse(
+                                routeurState.pathParameters['shopId']!),
+                            productId: int.parse(
+                                routeurState.pathParameters['productId']!)),
+                      ),
+                    ],
                   ),
                 ]),
             GoRoute(
