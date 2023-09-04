@@ -23,7 +23,7 @@ class Step {
     return Step(
       id: json['id'],
       title: json['title'],
-      instruction: "instruction",
+      instruction: json['instruction'],
       recipeURI: json['recipe'],
       position: json['position'],
     );

@@ -1,3 +1,4 @@
+import 'package:shopping_app/helper/quantity_helper.dart';
 import 'package:shopping_app/model/product.dart';
 
 class Ingredient {
@@ -39,7 +40,28 @@ class Ingredient {
     if (product == null && customPrice != null) {
       return customPrice;
     } else if (product != null) {
-      return product!.price;
+      return product!.price / product!.quantity * quantity;
+    } else {
+      return '';
+    }
+  }
+
+  get quantityVariation {
+    if (product == null && customQuantityType != null) {
+      return QuantityHelper.getQuantityVariation(customQuantityType!, quantity);
+    } else if (product != null) {
+      return QuantityHelper.getQuantityVariation(
+          product!.quantityType, product!.quantity);
+    } else {
+      return '';
+    }
+  }
+
+  get quantityValue {
+    if (product == null && customQuantityType != null) {
+      return QuantityHelper.getQuantityValue(customQuantityType!, quantity);
+    } else if (product != null) {
+      return QuantityHelper.getQuantityValue(product!.quantityType, quantity);
     } else {
       return '';
     }

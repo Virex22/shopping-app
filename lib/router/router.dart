@@ -6,6 +6,7 @@ import 'package:shopping_app/page/product_list.dart';
 import 'package:shopping_app/page/recipe/recipe_add.dart';
 import 'package:shopping_app/page/recipe/recipe_edit.dart';
 import 'package:shopping_app/page/recipe/recipe_list.dart';
+import 'package:shopping_app/page/recipe/recipe_view.dart';
 import 'package:shopping_app/page/shop_list.dart';
 import 'package:shopping_app/page/shopping_list.dart';
 import 'package:shopping_app/page/shopping_list_view.dart';
@@ -51,6 +52,13 @@ final router = GoRouter(
                       final id = int.parse(routeurState.pathParameters['id']!);
                       return RecipeEditPage(id: id);
                     }),
+                GoRoute(
+                  path: ':id',
+                  builder: (context, routeurState) {
+                    final id = int.parse(routeurState.pathParameters['id']!);
+                    return RecipeView(id: id);
+                  },
+                )
               ],
             ),
           ]),

@@ -25,9 +25,11 @@ void showProductFormDialog({
   final TextEditingController quantityController = TextEditingController();
 
   if (productModel != null) {
-    quantityController.text =
-        QuantityHelper.getQuantityValue(productModel).toString();
-    selectedQuantityType = QuantityHelper.getQuantityVariation(productModel);
+    quantityController.text = QuantityHelper.getQuantityValue(
+            productModel.quantityType, productModel.quantity)
+        .toString();
+    selectedQuantityType = QuantityHelper.getQuantityVariation(
+        productModel.quantityType, productModel.quantity);
     if (selectedQuantityType == 'l') selectedQuantityType = 'L';
   } else {
     selectedQuantityType = 'unit';

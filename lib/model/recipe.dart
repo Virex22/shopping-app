@@ -16,6 +16,18 @@ class Recipe {
 
   get iri => Recipe.getIrifromId(id);
 
+  get totalPrice {
+    double total = 0;
+    for (var ingredient in ingredients) {
+      total += ingredient.price;
+    }
+    return total;
+  }
+
+  get pricePerServing {
+    return totalPrice / servings;
+  }
+
   Recipe({
     required this.id,
     required this.title,

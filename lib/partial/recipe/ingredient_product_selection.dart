@@ -172,7 +172,9 @@ class IngredientProductSelectionState
               ),
               Text(
                 selectedProduct != null
-                    ? QuantityHelper.getQuantityVariation(selectedProduct!)
+                    ? QuantityHelper.getQuantityVariation(
+                        selectedProduct!.quantityType,
+                        selectedProduct!.quantity)
                     : '',
               ),
             ],

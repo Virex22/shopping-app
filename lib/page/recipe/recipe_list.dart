@@ -94,7 +94,7 @@ class RecipeListPageState extends State<RecipeListPage> {
                         ),
                         onTap: () {
                           context.go(
-                              '/recipe/${recipeProvider.recipes![index].id}');
+                              '/recipes/${recipeProvider.recipes![index].id}');
                         },
                       ),
                     );

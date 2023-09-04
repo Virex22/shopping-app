@@ -14,7 +14,7 @@ class Product {
   double quantity;
 
   get iri => Product.getIrifromId(id);
-  get quantityText => QuantityHelper.getQuantity(this);
+  get quantityText => QuantityHelper.getQuantity(quantityType, quantity);
   Shop? shop;
 
   Product(
