@@ -68,10 +68,11 @@ abstract class AbstractAPI {
       final response = await dio.delete(path);
       return response;
     } catch (e) {
-      if (e is DioException) {
+      if (e is DioException && e.response != null) {
         Logger().e(e.response!.data);
+        throw Exception('Erreur lors de la requête DELETE : ${e.response}');
       }
-      throw Exception('Erreur lors de la requête PUT : $e');
+      throw Exception('Erreur lors de la requête DELETE : $e');
     }
   }
 }

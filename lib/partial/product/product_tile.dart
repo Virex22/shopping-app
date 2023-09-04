@@ -44,20 +44,46 @@ class ProductTile extends StatelessWidget {
         });
   }
 
-  void _deleteProduct(BuildContext context) {
+  void _deleteProduct(BuildContext context) async {
     ScaffoldMessengerState snackBar = ScaffoldMessenger.of(context);
     showDeleteDialog(
         context: context,
         subtitle: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
         handleOnDelete: () async {
           final productApi = ProductAPI();
-          bool response = await productApi.deleteProduct(product.id);
-          if (response) {
-            handleProductAction('delete', product);
-          } else {
-            showSnackBar(
-                snackBar: snackBar,
-                message: 'Erreur lors de la suppression du produit');
+          try {
+            bool response = await productApi.deleteProduct(product.id);
+            if (response) {
+              handleProductAction('delete', product);
+            } else {
+              showSnackBar(
+                  snackBar: snackBar,
+                  message: 'Erreur lors de la suppression du produit');
+            }
+          } catch (e) {
+            if (e.toString().contains('Constraint with ingredient')) {
+              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Erreur'),
+                  content: const Text(
+                      'Impossible de supprimer ce produit car il est utilisé dans une recette'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Ok'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              showSnackBar(
+                  snackBar: snackBar,
+                  message: 'Erreur lors de la suppression du produit');
+            }
           }
         });
   }
@@ -142,7 +168,6 @@ class ProductTile extends StatelessWidget {
                       leading: const Icon(Icons.delete),
                       title: const Text('Supprimer'),
                       onTap: () {
-                        Navigator.pop(context);
                         _deleteProduct(context);
                       },
                       textColor: Colors.red,

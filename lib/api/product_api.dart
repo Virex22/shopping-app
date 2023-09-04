@@ -34,8 +34,16 @@ class ProductAPI extends AbstractAPI {
   }
 
   Future<bool> deleteProduct(int id) async {
-    final Response<dynamic> response = await delete('/products/$id');
-    return response.statusCode == 204;
+    try {
+      final Response<dynamic> response = await delete('/products/$id');
+      return response.statusCode == 204;
+    } catch (e) {
+      if (e.toString().contains('ingredient')) {
+        throw Exception('Constraint with ingredient');
+      } else {
+        return false;
+      }
+    }
   }
 
   Future<Product> updateProduct(
