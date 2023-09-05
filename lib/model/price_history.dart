@@ -32,7 +32,9 @@ class PriceHistory {
     return PriceHistory(
       id: json['id'],
       productURI: json['product'],
-      price: double.parse(json['price']),
+      price: json['price'] is String
+          ? double.parse(json['price'])
+          : json['price'].toDouble(),
       dateUpdate: DateTime.parse(json['dateUpdate']),
     );
   }
