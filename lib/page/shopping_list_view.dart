@@ -106,6 +106,9 @@ class ShoppingListViewState extends State<ShoppingListView> {
         },
         addExistingItem: () {
           context.go('/shops');
+        },
+        addRecipeItem: () {
+          context.go('/recipes');
         });
   }
 

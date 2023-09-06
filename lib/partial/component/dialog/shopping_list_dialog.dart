@@ -43,6 +43,7 @@ void showAddItemOnShoppingListDialog({
   required BuildContext context,
   required Function() addCustomItem,
   required Function() addExistingItem,
+  required Function() addRecipeItem,
 }) {
   showDialog(
     context: context,
@@ -75,6 +76,18 @@ void showAddItemOnShoppingListDialog({
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child: const Text('Ajouter un produit existant'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              addRecipeItem();
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 50),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text('Ajouter à partir d\'une recette'),
           ),
         ],
       ),
