@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/handler/recipe/recipe_handler.dart';
+import 'package:shopping_app/helper/recipe_helper.dart';
 import 'package:shopping_app/model/recipe.dart';
+import 'package:shopping_app/model/shopping_list_item.dart';
 import 'package:shopping_app/model/step.dart' as step_model;
+import 'package:shopping_app/partial/component/dialog/recipe_dialog.dart';
 import 'package:shopping_app/provider/recipe_provider.dart';
 
 class RecipeView extends StatefulWidget {
@@ -135,7 +139,6 @@ class RecipeViewState extends State<RecipeView> {
                     for (final ingredient in recipe.ingredients)
                       ListTile(
                         title: Text(
-                          // place dot before each item
                           " • ${ingredient.name}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
@@ -251,6 +254,34 @@ class RecipeViewState extends State<RecipeView> {
                     Navigator.pop(context);
                   },
                   child: const Text('Retour'),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showRecipeAddDialog(
+                      context: context,
+                      handleOnAddToList: (shoppingList) {
+                        showRecipeShoppingListAddDialog(
+                          context: context,
+                          shoppingListItems:
+                              RecipeHelper.getShoppingListItemsFromRecipe(
+                            recipe,
+                          ),
+                          handleOnAddToList: (List<ShoppingListItem> items) {
+                            RecipeHandler.persistRecipeShoppingListItem(
+                                items, shoppingList);
+                          },
+                        );
+                      },
+                    );
+                  },
+                  child: const Text('Ajouter les ingrédients à une liste'),
                 ),
               ),
             ),

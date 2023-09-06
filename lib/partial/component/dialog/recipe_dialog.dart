@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app/helper/global_helper.dart';
 import 'package:shopping_app/model/ingredient.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/model/recipe.dart';
+import 'package:shopping_app/model/shopping_list.dart';
+import 'package:shopping_app/model/shopping_list_item.dart';
 import 'package:shopping_app/model/step.dart' as step_model;
 import 'package:shopping_app/partial/recipe/ingredient_product_selection.dart';
+import 'package:shopping_app/partial/recipe/recipe_shoppingitem_selection.dart';
+import 'package:shopping_app/provider/shopping_list_provider.dart';
 
 void showAddIngredientDialog({
   required BuildContext context,
@@ -317,6 +322,105 @@ void showAddStepDialog(
             Navigator.of(context).pop();
           },
           child: const Text('Ajouter'),
+        ),
+      ],
+    ),
+  );
+}
+
+void showRecipeAddDialog({
+  required BuildContext context,
+  required Function(ShoppingList shoppingList) handleOnAddToList,
+}) {
+  ShoppingListProvider shoppingListProvider =
+      Provider.of<ShoppingListProvider>(context, listen: false);
+  List<ShoppingList>? shoppingLists = shoppingListProvider.shoppingList;
+  if (shoppingLists == null || shoppingLists.isEmpty) {
+    shoppingListProvider.fetchAllShoppingListFromApi().then((value) {
+      _showRecipeAddDialogPart(
+        context: context,
+        handleOnAddToList: handleOnAddToList,
+        shoppingLists: value,
+      );
+    });
+  } else {
+    _showRecipeAddDialogPart(
+      context: context,
+      handleOnAddToList: handleOnAddToList,
+      shoppingLists: shoppingLists,
+    );
+  }
+}
+
+void _showRecipeAddDialogPart({
+  required BuildContext context,
+  required Function(ShoppingList shoppingList) handleOnAddToList,
+  required List<ShoppingList> shoppingLists,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Ajouter à une liste'),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+          itemCount: shoppingLists.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(shoppingLists[index].name),
+              onTap: () {
+                Navigator.of(context).pop();
+                handleOnAddToList(shoppingLists[index]);
+              },
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Annuler'),
+        ),
+      ],
+    ),
+  );
+}
+
+showRecipeShoppingListAddDialog({
+  required BuildContext context,
+  required List<ShoppingListItem> shoppingListItems,
+  required Function(List<ShoppingListItem> shoppingList) handleOnAddToList,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Ajouter à une liste'),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: RecipeShoppingItemSelection(
+          shoppingListItems: shoppingListItems,
+          onFormChange: ({List<ShoppingListItem>? shoppingListItems}) {
+            if (shoppingListItems != null) {
+              List<ShoppingListItem> validShoppingListItems = shoppingListItems
+                  .where((element) => element.isCompleted)
+                  .toList();
+              handleOnAddToList(validShoppingListItems);
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Annuler'),
         ),
       ],
     ),

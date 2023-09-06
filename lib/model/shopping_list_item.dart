@@ -14,6 +14,8 @@ class ShoppingListItem {
   int quantity;
 
   get iri => ShoppingListItem.getIrifromId(id);
+  get isCustom => product == null;
+
   double get price {
     if (product == null && customPrice != null) {
       return customPrice!;

@@ -1,9 +1,12 @@
 import 'package:shopping_app/api/ingredient_api.dart';
 import 'package:shopping_app/api/recipe_api.dart';
+import 'package:shopping_app/api/shopping_list_item_api.dart';
 import 'package:shopping_app/api/step_api.dart';
 import 'package:shopping_app/model/ingredient.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/model/recipe.dart';
+import 'package:shopping_app/model/shopping_list.dart';
+import 'package:shopping_app/model/shopping_list_item.dart';
 import 'package:shopping_app/model/step.dart' as step_model;
 
 class RecipeHandler {
@@ -184,6 +187,27 @@ class RecipeHandler {
       if (!steps.any((element) => element.id == initStep.id)) {
         StepAPI stepAPI = StepAPI();
         stepAPI.deleteStep(initStep.id);
+      }
+    }
+  }
+
+  static void persistRecipeShoppingListItem(
+      List<ShoppingListItem> items, ShoppingList shoppingList) {
+    ShoppingListItemApi shoppingListItemApi = ShoppingListItemApi();
+    for (ShoppingListItem item in items) {
+      if (item.isCustom) {
+        shoppingListItemApi.addShoppingListItem({
+          'customName': item.customName,
+          'customPrice': item.customPrice.toString(),
+          'quantity': item.quantity,
+          'shoppingList': ShoppingList.getIrifromId(shoppingList.id),
+        });
+      } else {
+        shoppingListItemApi.addShoppingListItem({
+          'product': Product.getIrifromId(item.product!.id),
+          'quantity': item.quantity,
+          'shoppingList': ShoppingList.getIrifromId(shoppingList.id),
+        });
       }
     }
   }

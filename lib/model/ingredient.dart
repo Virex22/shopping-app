@@ -15,6 +15,7 @@ class Ingredient {
   String? recipeURI;
 
   get iri => Ingredient.getIrifromId(id);
+  get isCustom => product == null;
 
   Ingredient({
     required this.id,
