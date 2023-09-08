@@ -21,7 +21,6 @@ class RecipeShoppingItemSelectionState
   @override
   void initState() {
     super.initState();
-    // make all isCompleted to true
     shoppingListItems = widget.shoppingListItems.map((e) {
       e.isCompleted = true;
       return e;
@@ -33,49 +32,46 @@ class RecipeShoppingItemSelectionState
     return SingleChildScrollView(
       child: Column(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            width: double.infinity,
-            child: ListView.builder(
-              itemCount: widget.shoppingListItems.length,
-              itemBuilder: (context, index) {
-                ShoppingListItem item = widget.shoppingListItems[index];
-                return ListTile(
-                  leading: Checkbox(
-                    value: item.isCompleted,
-                    onChanged: (value) => setState(() {
-                      item.isCompleted = value!;
-                    }),
-                  ),
-                  title: Text(item.name),
-                  subtitle: Text(
-                    '~${item.price}€',
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              item.quantity--;
-                            });
-                          }),
-                      Text('${item.quantity}'),
-                      IconButton(
-                        icon: const Icon(Icons.add),
+          ListView.builder(
+            itemCount: widget.shoppingListItems.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              ShoppingListItem item = widget.shoppingListItems[index];
+              return ListTile(
+                leading: Checkbox(
+                  value: item.isCompleted,
+                  onChanged: (value) => setState(() {
+                    item.isCompleted = value!;
+                  }),
+                ),
+                title: Text(item.name),
+                subtitle: Text(
+                  '~${item.price}€',
+                  style: const TextStyle(fontSize: 14),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        icon: const Icon(Icons.remove),
                         onPressed: () {
                           setState(() {
-                            item.quantity++;
+                            item.quantity--;
                           });
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                        }),
+                    Text('${item.quantity}'),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        setState(() {
+                          item.quantity++;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
           SizedBox(
             width: double.infinity,
