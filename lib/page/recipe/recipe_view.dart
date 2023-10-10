@@ -152,7 +152,7 @@ class RecipeViewState extends State<RecipeView> {
                           ),
                         ),
                         trailing: Text(
-                          "${ingredient.quantity} ${ingredient.quantityVariation == "unit" ? "" : ingredient.quantityVariation} ",
+                          "${ingredient.quantityValue} ${ingredient.quantityVariation == "unit" ? "" : ingredient.quantityVariation} ",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,

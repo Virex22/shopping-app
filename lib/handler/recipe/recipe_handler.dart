@@ -26,6 +26,7 @@ class RecipeHandler {
       'servings': servingsCount,
       'time': formatedTime.toIso8601String(),
     });
+
     for (Ingredient ingredient in ingredients) {
       IngredientAPI ingredientAPI = IngredientAPI();
       if (ingredient.customName != null) {

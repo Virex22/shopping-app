@@ -10,27 +10,27 @@ class QuantityHelper {
     return '${quantity.toInt()}';
   }
 
-  static int getQuantityValue(String quantityType, double quantity) {
+  static double getQuantityValue(String quantityType, double quantity) {
     if (quantityType == 'unit') {
-      return quantity.toInt();
+      return quantity;
     } else if (quantityType == 'liquid') {
       if (quantity < 0.1) {
-        return (quantity * 1000).toInt();
+        return quantity * 1000;
       } else if (quantity < 1) {
-        return (quantity * 100).toInt();
+        return quantity * 100;
       } else {
-        return quantity.toInt();
+        return quantity;
       }
     } else if (quantityType == 'weight') {
       if (quantity < 1) {
-        return (quantity * 1000).toInt();
+        return quantity * 1000;
       } else if (quantity < 1000) {
-        return quantity.toInt();
+        return quantity;
       } else {
-        return (quantity ~/ 1000).toInt();
+        return quantity / 1000;
       }
     }
-    return quantity.toInt();
+    return quantity;
   }
 
   static String removeDecimalZeroFormat(double num) {
@@ -106,7 +106,7 @@ class QuantityHelper {
         quantityType == 'kg') {
       return 'weight';
     }
-    throw Exception('Invalid quantity type');
+    throw Exception('Invalid quantity type : $quantityType');
   }
 
   static String getQuantityVariation(String quantityType, double quantity) {

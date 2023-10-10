@@ -52,7 +52,7 @@ class Ingredient {
       return QuantityHelper.getQuantityVariation(customQuantityType!, quantity);
     } else if (product != null) {
       return QuantityHelper.getQuantityVariation(
-          product!.quantityType, product!.quantity);
+          product!.quantityType, quantity);
     } else {
       return '';
     }

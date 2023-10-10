@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/helper/global_helper.dart';
+import 'package:shopping_app/helper/quantity_helper.dart';
 import 'package:shopping_app/model/ingredient.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/model/recipe.dart';
@@ -200,7 +201,8 @@ void showAddProductIngredientDialog({
                       id: -1,
                       recipeURI: '',
                       product: selectedProduct,
-                      quantity: selectedQuantity!);
+                      quantity: QuantityHelper.pharseQuantity(selectedQuantity!,
+                          selectedProduct!.quantityVariation));
                   handleOnAddIngredient(ingredient);
                   Navigator.of(context).pop();
                 },
